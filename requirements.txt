@@ -1,11 +1,2 @@
-# Enrollment CRUD System - Web Version
-# Python 3.8 or higher required
-
-# Web Framework
 Flask==3.0.0
 Werkzeug==3.0.1
-
-# Standard Library (included with Python):
-# - sqlite3 (Database)
-# - hashlib (Password hashing)
-# - datetime (Date handling)
