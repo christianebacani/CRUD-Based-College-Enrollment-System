@@ -52,7 +52,6 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    """User registration"""
     if request.method == 'POST':
         full_name = request.form.get('full_name', '').strip()
         email = request.form.get('email', '').strip()
@@ -77,7 +76,6 @@ def register():
 
 @app.route('/logout')
 def logout():
-    """Logout user"""
     session.clear()
     flash('You have been logged out successfully', 'info')
     return redirect(url_for('login'))
@@ -86,7 +84,6 @@ def logout():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    """Main dashboard"""
     return render_template('dashboard.html', user=session)
 
 
@@ -116,7 +113,6 @@ def get_students():
 @app.route('/api/students/search', methods=['GET'])
 @login_required
 def search_students():
-    """Search students"""
     search_term = request.args.get('query', '')
     
     if not search_term:
@@ -145,7 +141,6 @@ def search_students():
 @app.route('/api/students/add', methods=['POST'])
 @login_required
 def add_student():
-    """Add new student"""
     data = request.get_json()
 
     required_fields = ['student_id', 'first_name', 'last_name', 'course']
@@ -171,7 +166,6 @@ def add_student():
 @app.route('/api/students/update/<student_id>', methods=['PUT'])
 @login_required
 def update_student(student_id):
-    """Update student"""
     data = request.get_json()
 
     required_fields = ['first_name', 'last_name', 'course']

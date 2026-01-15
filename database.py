@@ -10,20 +10,16 @@ from datetime import datetime
 
 class Database:
     def __init__(self, db_name="enrollment_system.db"):
-        """Initialize database connection"""
         self.db_name = db_name
         self.create_tables()
     
     def get_connection(self):
-        """Get database connection"""
         return sqlite3.connect(self.db_name)
     
     def create_tables(self):
-        """Create necessary tables if they don't exist"""
         conn = self.get_connection()
         cursor = conn.cursor()
         
-        # Users table for authentication
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,7 +32,6 @@ class Database:
             )
         ''')
         
-        # Students table for enrollment
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS students (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,20 +50,16 @@ class Database:
         conn.commit()
         conn.close()
         
-        # Create default admin user if not exists
         self.create_default_admin()
     
     def hash_password(self, password):
-        """Hash password using SHA-256"""
         return hashlib.sha256(password.encode()).hexdigest()
     
     def create_default_admin(self):
-        """Create default admin user for initial login"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
             
-            # Check if admin exists
             cursor.execute("SELECT id FROM users WHERE username = ?", ("admin",))
             if cursor.fetchone() is None:
                 hashed_password = self.hash_password("admin123")
@@ -84,7 +75,6 @@ class Database:
             print(f"Error creating default admin: {e}")
     
     def verify_login(self, username, password):
-        """Verify user credentials"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
@@ -114,7 +104,6 @@ class Database:
             return {'success': False, 'message': f'Database error: {str(e)}'}
     
     def create_user(self, username, password, full_name, email="", role="user"):
-        """Create a new user account"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
@@ -134,9 +123,7 @@ class Database:
         except Exception as e:
             return {'success': False, 'message': f'Error: {str(e)}'}
     
-    # CRUD Operations for Students
     def add_student(self, student_data):
-        """Add a new student"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
@@ -165,7 +152,6 @@ class Database:
             return {'success': False, 'message': f'Error: {str(e)}'}
     
     def get_all_students(self):
-        """Retrieve all students"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
@@ -181,7 +167,6 @@ class Database:
             return []
     
     def search_student(self, search_term):
-        """Search for students by ID, name, or course"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
@@ -205,7 +190,6 @@ class Database:
             return []
     
     def update_student(self, student_id, student_data):
-        """Update student information"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
@@ -239,7 +223,6 @@ class Database:
             return {'success': False, 'message': f'Error: {str(e)}'}
     
     def delete_student(self, student_id):
-        """Delete a student"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()

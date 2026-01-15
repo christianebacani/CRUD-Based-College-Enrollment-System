@@ -1,12 +1,6 @@
-/**
- * JavaScript for Enrollment System Dashboard
- * Handles AJAX calls and user interactions
- */
-
 let currentStudents = [];
 let selectedStudentId = null;
 
-// Load all students
 async function loadStudents() {
     try {
         const response = await fetch('/api/students');
@@ -25,7 +19,6 @@ async function loadStudents() {
     }
 }
 
-// Display students in table
 function displayStudents(students) {
     const tableBody = document.getElementById('studentsTableBody');
     
@@ -60,20 +53,16 @@ function displayStudents(students) {
     }).join('');
 }
 
-// Select a student from table
 function selectStudent(studentId) {
-    // Remove previous selection
     document.querySelectorAll('.data-table tbody tr').forEach(row => {
         row.classList.remove('selected');
     });
     
-    // Add selection to clicked row
     const selectedRow = document.querySelector(`tr[data-student-id="${studentId}"]`);
     if (selectedRow) {
         selectedRow.classList.add('selected');
     }
     
-    // Find student data
     const student = currentStudents.find(s => s.student_id === studentId);
     
     if (student) {
@@ -82,7 +71,6 @@ function selectStudent(studentId) {
     }
 }
 
-// Populate form with student data
 function populateForm(student) {
     document.getElementById('originalStudentId').value = student.student_id;
     document.getElementById('student_id').value = student.student_id;
@@ -95,13 +83,11 @@ function populateForm(student) {
     document.getElementById('status').value = student.status;
 }
 
-// Clear form
 function clearForm() {
     document.getElementById('studentForm').reset();
     document.getElementById('originalStudentId').value = '';
     selectedStudentId = null;
     
-    // Remove table selection
     document.querySelectorAll('.data-table tbody tr').forEach(row => {
         row.classList.remove('selected');
     });
@@ -109,7 +95,6 @@ function clearForm() {
     document.getElementById('student_id').focus();
 }
 
-// Get form data
 function getFormData() {
     return {
         student_id: document.getElementById('student_id').value.trim(),
@@ -123,7 +108,6 @@ function getFormData() {
     };
 }
 
-// Validate form data
 function validateFormData(data, isUpdate = false) {
     if (!data.student_id || !data.first_name || !data.last_name || !data.course) {
         showAlert('Please fill in all required fields (Student ID, First Name, Last Name, Course)', 'warning');
@@ -132,7 +116,6 @@ function validateFormData(data, isUpdate = false) {
     return true;
 }
 
-// Add new student
 async function addStudent() {
     const data = getFormData();
     
@@ -164,7 +147,6 @@ async function addStudent() {
     }
 }
 
-// Update student
 async function updateStudent() {
     const originalStudentId = document.getElementById('originalStudentId').value;
     
@@ -203,7 +185,6 @@ async function updateStudent() {
     }
 }
 
-// Delete student
 async function deleteStudent() {
     const originalStudentId = document.getElementById('originalStudentId').value;
     
@@ -239,7 +220,6 @@ async function deleteStudent() {
     }
 }
 
-// Search students
 let searchTimeout;
 async function searchStudents() {
     clearTimeout(searchTimeout);
@@ -268,42 +248,34 @@ async function searchStudents() {
     }, 300);
 }
 
-// Update record count
 function updateRecordCount(count, isSearch = false) {
     const countLabel = document.getElementById('recordCount');
     const prefix = isSearch ? 'Found:' : 'Total:';
     countLabel.textContent = `${prefix} ${count} record${count !== 1 ? 's' : ''}`;
 }
 
-// Show alert message
 function showAlert(message, type) {
-    // Create alert element
     const alert = document.createElement('div');
     alert.className = `alert alert-${type}`;
     alert.textContent = message;
     
-    // Add close button
     const closeBtn = document.createElement('button');
     closeBtn.className = 'alert-close';
     closeBtn.innerHTML = '&times;';
     closeBtn.onclick = () => alert.remove();
     alert.appendChild(closeBtn);
     
-    // Insert at top of container
     const container = document.querySelector('.container');
     const firstChild = container.firstChild;
     container.insertBefore(alert, firstChild);
     
-    // Auto remove after 5 seconds
     setTimeout(() => {
         alert.style.opacity = '0';
         setTimeout(() => alert.remove(), 300);
     }, 5000);
 }
 
-// Keyboard shortcuts
 document.addEventListener('keydown', function(e) {
-    // Ctrl/Cmd + S to add/update
     if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
         if (selectedStudentId) {
@@ -313,7 +285,6 @@ document.addEventListener('keydown', function(e) {
         }
     }
     
-    // Escape to clear form
     if (e.key === 'Escape') {
         clearForm();
     }
