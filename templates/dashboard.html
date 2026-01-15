@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Enrollment System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-page">
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span class="icon">📚</span>
+            <span class="title">Student Enrollment System</span>
+        </div>
+        <div class="navbar-user">
+            <span class="welcome-text">Welcome, <strong>{{ user.full_name }}</strong></span>
+            <span class="role-badge">{{ user.role }}</span>
+            <a href="{{ url_for('logout') }}" class="btn btn-logout">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}" id="flash-message">
+                        {{ message }}
+                        <button onclick="this.parentElement.remove()" class="alert-close">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="container dashboard-container">
+        <!-- Left Panel - Form -->
+        <div class="form-panel">
+            <div class="panel-header">
+                <h2>Student Information</h2>
+            </div>
+            <div class="panel-body">
+                <form id="studentForm">
+                    <input type="hidden" id="originalStudentId" value="">
+                    
+                    <div class="form-group">
+                        <label for="student_id">Student ID *</label>
+                        <input type="text" id="student_id" class="form-control" 
+                               placeholder="e.g., 2024-0001" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first_name">First Name *</label>
+                            <input type="text" id="first_name" class="form-control" 
+                                   placeholder="First name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Last Name *</label>
+                            <input type="text" id="last_name" class="form-control" 
+                                   placeholder="Last name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" 
+                               placeholder="student@example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone" class="form-control" 
+                               placeholder="+1234567890">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="course">Course *</label>
+                        <input type="text" id="course" class="form-control" 
+                               placeholder="e.g., Computer Science" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="year_level">Year Level</label>
+                        <select id="year_level" class="form-control">
+                            <option value="">Select year level</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status" class="form-control">
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                            <option value="Graduated">Graduated</option>
+                            <option value="Withdrawn">Withdrawn</option>
+                        </select>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" onclick="addStudent()" class="btn btn-success btn-block">
+                            ➕ Add Student
+                        </button>
+                        <button type="button" onclick="updateStudent()" class="btn btn-warning btn-block">
+                            ✏️ Update Student
+                        </button>
+                        <button type="button" onclick="deleteStudent()" class="btn btn-danger btn-block">
+                            🗑️ Delete Student
+                        </button>
+                        <button type="button" onclick="clearForm()" class="btn btn-secondary btn-block">
+                            🔄 Clear Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Panel - Table -->
+        <div class="table-panel">
+            <div class="panel-header">
+                <h2>Student Records</h2>
+            </div>
+            <div class="panel-controls">
+                <div class="search-box">
+                    <input type="text" id="searchInput" class="form-control search-input" 
+                           placeholder="🔍 Search by ID, name, or course..." 
+                           onkeyup="searchStudents()">
+                </div>
+                <button onclick="loadStudents()" class="btn btn-primary">🔄 Refresh</button>
+                <span class="record-count" id="recordCount">Total: 0 records</span>
+            </div>
+            <div class="panel-body">
+                <div class="table-container">
+                    <table class="data-table" id="studentsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Course</th>
+                                <th>Year</th>
+                                <th>Status</th>
+                                <th>Enrolled</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <tr>
+                                <td colspan="9" class="loading-message">Loading students...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Auto-hide flash messages after 5 seconds
+        setTimeout(() => {
+            const flashMessage = document.getElementById('flash-message');
+            if (flashMessage) {
+                flashMessage.style.opacity = '0';
+                setTimeout(() => flashMessage.remove(), 300);
+            }
+        }, 5000);
+
+        // Load students on page load
+        window.onload = function() {
+            loadStudents();
+        };
+    </script>
+</body>
+</html>
