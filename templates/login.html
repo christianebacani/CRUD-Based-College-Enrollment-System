@@ -9,14 +9,12 @@
 <body class="login-page">
     <div class="login-container">
         <div class="login-card">
-            <!-- Logo/Icon -->
             <div class="login-header">
                 <div class="icon">🎓</div>
                 <h1>Enrollment System</h1>
                 <p class="subtitle">Please login to continue</p>
             </div>
 
-            <!-- Flash messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
@@ -27,7 +25,6 @@
                 {% endif %}
             {% endwith %}
 
-            <!-- Login Form -->
             <form method="POST" action="{{ url_for('login') }}" class="login-form">
                 <div class="form-group">
                     <label for="username">Username</label>
@@ -51,7 +48,6 @@
                 </div>
             </form>
 
-            <!-- Default Credentials Info -->
             <div class="info-box">
                 <small>Default credentials: <strong>admin</strong> / <strong>admin123</strong></small>
             </div>

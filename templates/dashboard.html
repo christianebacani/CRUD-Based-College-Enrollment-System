@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="dashboard-page">
-    <!-- Top Navigation Bar -->
     <nav class="navbar">
         <div class="navbar-brand">
             <span class="icon">📚</span>
@@ -20,7 +19,6 @@
         </div>
     </nav>
 
-    <!-- Flash Messages -->
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -34,9 +32,7 @@
         {% endwith %}
     </div>
 
-    <!-- Main Content -->
     <div class="container dashboard-container">
-        <!-- Left Panel - Form -->
         <div class="form-panel">
             <div class="panel-header">
                 <h2>Student Information</h2>
@@ -121,7 +117,6 @@
             </div>
         </div>
 
-        <!-- Right Panel - Table -->
         <div class="table-panel">
             <div class="panel-header">
                 <h2>Student Records</h2>
@@ -164,7 +159,6 @@
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script>
-        // Auto-hide flash messages after 5 seconds
         setTimeout(() => {
             const flashMessage = document.getElementById('flash-message');
             if (flashMessage) {
@@ -173,7 +167,6 @@
             }
         }, 5000);
 
-        // Load students on page load
         window.onload = function() {
             loadStudents();
         };
