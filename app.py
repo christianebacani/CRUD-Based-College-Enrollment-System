@@ -57,12 +57,13 @@ def register():
         email = request.form.get('email', '').strip()
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '')
+        role = request.form.get('role', 'user')
         
         if not all([full_name, username, password]):
             flash('Please fill in all required fields', 'error')
             return render_template('register.html')
         
-        result = db.create_user(username, password, full_name, email)
+        result = db.create_user(username, password, full_name, email, role)
         
         if result['success']:
             flash('Account created successfully! Please login.', 'success')
@@ -141,6 +142,9 @@ def search_students():
 @app.route('/api/students/add', methods=['POST'])
 @login_required
 def add_student():
+    if session.get('role') != 'admin':
+        return jsonify({'success': False, 'message': 'Access denied. Admin privileges required.'})
+    
     data = request.get_json()
 
     required_fields = ['student_id', 'first_name', 'last_name', 'course']
@@ -166,6 +170,9 @@ def add_student():
 @app.route('/api/students/update/<student_id>', methods=['PUT'])
 @login_required
 def update_student(student_id):
+    if session.get('role') != 'admin':
+        return jsonify({'success': False, 'message': 'Access denied. Admin privileges required.'})
+    
     data = request.get_json()
 
     required_fields = ['first_name', 'last_name', 'course']
@@ -190,6 +197,9 @@ def update_student(student_id):
 @app.route('/api/students/delete/<student_id>', methods=['DELETE'])
 @login_required
 def delete_student(student_id):
+    if session.get('role') != 'admin':
+        return jsonify({'success': False, 'message': 'Access denied. Admin privileges required.'})
+    
     result = db.delete_student(student_id)
     return jsonify(result)
 

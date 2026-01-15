@@ -1,6 +1,14 @@
 let currentStudents = [];
 let selectedStudentId = null;
 
+function checkAdminRole() {
+    if (typeof userRole === 'undefined' || userRole !== 'admin') {
+        showAlert('Access denied. Admin privileges required for this operation.', 'error');
+        return false;
+    }
+    return true;
+}
+
 async function loadStudents() {
     try {
         const response = await fetch('/api/students');
@@ -117,6 +125,8 @@ function validateFormData(data, isUpdate = false) {
 }
 
 async function addStudent() {
+    if (!checkAdminRole()) return;
+    
     const data = getFormData();
     
     if (!validateFormData(data)) {
@@ -148,6 +158,8 @@ async function addStudent() {
 }
 
 async function updateStudent() {
+    if (!checkAdminRole()) return;
+    
     const originalStudentId = document.getElementById('originalStudentId').value;
     
     if (!originalStudentId) {
@@ -186,6 +198,8 @@ async function updateStudent() {
 }
 
 async function deleteStudent() {
+    if (!checkAdminRole()) return;
+    
     const originalStudentId = document.getElementById('originalStudentId').value;
     
     if (!originalStudentId) {
