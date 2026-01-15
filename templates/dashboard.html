@@ -35,7 +35,7 @@
     <div class="container dashboard-container">
         <div class="form-panel">
             <div class="panel-header">
-                <h2>Student Information</h2>
+                <h2>Student Information {% if user.role == 'user' %}(Read-Only){% endif %}</h2>
             </div>
             <div class="panel-body">
                 <form id="studentForm">
@@ -100,6 +100,7 @@
                     </div>
 
                     <div class="button-group">
+                        {% if user.role == 'admin' %}
                         <button type="button" onclick="addStudent()" class="btn btn-success btn-block">
                             ➕ Add Student
                         </button>
@@ -109,6 +110,7 @@
                         <button type="button" onclick="deleteStudent()" class="btn btn-danger btn-block">
                             🗑️ Delete Student
                         </button>
+                        {% endif %}
                         <button type="button" onclick="clearForm()" class="btn btn-secondary btn-block">
                             🔄 Clear Form
                         </button>
@@ -159,6 +161,8 @@
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script>
+        const userRole = "{{ user.role }}";
+        
         setTimeout(() => {
             const flashMessage = document.getElementById('flash-message');
             if (flashMessage) {
@@ -169,6 +173,18 @@
 
         window.onload = function() {
             loadStudents();
+            
+            if (userRole !== 'admin') {
+                const formInputs = document.querySelectorAll('#studentForm input, #studentForm select');
+                formInputs.forEach(input => {
+                    input.disabled = true;
+                });
+                
+                const studentIdInput = document.getElementById('student_id');
+                if (studentIdInput) {
+                    studentIdInput.placeholder = 'Read-only access - Admin privileges required for CRUD operations';
+                }
+            }
         };
     </script>
 </body>
