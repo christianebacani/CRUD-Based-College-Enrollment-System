@@ -96,17 +96,9 @@ def validate_student_data(data, is_update=False):
     # Department validation
     valid_departments = [
         'College of Engineering',
-        'College of Business Administration',
-        'College of Arts and Sciences',
-        'College of Education',
-        'College of Computer Studies',
-        'College of Nursing',
-        'College of Medicine',
-        'College of Law',
-        'College of Architecture',
-        'College of Agriculture',
-        'College of Fine Arts',
-        'College of Communication'
+        'College of Architecture, Fine Arts and Design',
+        'College of Engineering Technology',
+        'College of Informatics and Computing Sciences'
     ]
     
     department = data.get('department', '').strip()
