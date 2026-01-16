@@ -106,8 +106,8 @@ def validate_student_data(data, is_update=False):
         return {'valid': False, 'message': 'Please select a valid College Department'}
     
     # Status validation
-    valid_statuses = ['Active', 'Inactive', 'Graduated', 'Withdrawn']
-    status = data.get('status', 'Active')
+    valid_statuses = ['Enrolled', 'Unenrolled', 'Graduated', 'Dropped', 'Suspended', 'Transferred Out']
+    status = data.get('status', 'Enrolled')
     if status not in valid_statuses:
         return {'valid': False, 'message': 'Invalid status value'}
     
