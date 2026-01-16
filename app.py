@@ -1,6 +1,7 @@
 
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from database import Database
+from validation import validate_student_data, sanitize_student_data
 from functools import wraps
 import os
 
@@ -147,12 +148,13 @@ def add_student():
     
     data = request.get_json()
 
-    required_fields = ['student_id', 'first_name', 'last_name', 'course']
-    for field in required_fields:
-        if not data.get(field):
-            return jsonify({'success': False, 'message': f'{field.replace("_", " ").title()} is required'})
+    # Validate data
+    validation_result = validate_student_data(data, is_update=False)
+    if not validation_result['valid']:
+        return jsonify({'success': False, 'message': validation_result['message']})
     
-    student_data = {
+    # Sanitize data
+    student_data = sanitize_student_data({
         'student_id': data['student_id'],
         'first_name': data['first_name'],
         'middle_name': data.get('middle_name', ''),
@@ -163,7 +165,7 @@ def add_student():
         'department': data.get('department', ''),
         'year_level': data.get('year_level', ''),
         'status': data.get('status', 'Active')
-    }
+    })
     
     result = db.add_student(student_data)
     return jsonify(result)
@@ -177,12 +179,13 @@ def update_student(student_id):
     
     data = request.get_json()
 
-    required_fields = ['first_name', 'last_name', 'course']
-    for field in required_fields:
-        if not data.get(field):
-            return jsonify({'success': False, 'message': f'{field.replace("_", " ").title()} is required'})
+    # Validate data
+    validation_result = validate_student_data(data, is_update=True)
+    if not validation_result['valid']:
+        return jsonify({'success': False, 'message': validation_result['message']})
     
-    student_data = {
+    # Sanitize data
+    student_data = sanitize_student_data({
         'first_name': data['first_name'],
         'middle_name': data.get('middle_name', ''),
         'last_name': data['last_name'],
@@ -192,7 +195,10 @@ def update_student(student_id):
         'department': data.get('department', ''),
         'year_level': data.get('year_level', ''),
         'status': data.get('status', 'Active')
-    }
+    })
+    
+    result = db.update_student(student_id, student_data)
+    return jsonify(result)
     
     result = db.update_student(student_id, student_data)
     return jsonify(result)
