@@ -91,13 +91,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="course">Course *</label>
-                        <input type="text" id="course" class="form-control" 
-                               placeholder="e.g., Computer Science" 
-                               minlength="2" maxlength="100" required>
-                    </div>
-
-                    <div class="form-group">
                         <label for="department">College Department *</label>
                         <select id="department" class="form-control" required>
                             <option value="">Select department</option>
@@ -113,6 +106,13 @@
                             <option value="College of Agriculture">College of Agriculture</option>
                             <option value="College of Fine Arts">College of Fine Arts</option>
                             <option value="College of Communication">College of Communication</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="course">Course *</label>
+                        <select id="course" class="form-control" required>
+                            <option value="">Select department first</option>
                         </select>
                     </div>
 
@@ -201,6 +201,125 @@
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script>
         const userRole = "{{ user.role }}";
+        
+        // Course offerings by department
+        const departmentCourses = {
+            'College of Engineering': [
+                'Civil Engineering',
+                'Mechanical Engineering',
+                'Electrical Engineering',
+                'Electronics Engineering',
+                'Chemical Engineering',
+                'Industrial Engineering',
+                'Computer Engineering'
+            ],
+            'College of Business Administration': [
+                'Bachelor of Science in Accountancy',
+                'Business Administration',
+                'Marketing Management',
+                'Financial Management',
+                'Human Resource Management',
+                'Entrepreneurship'
+            ],
+            'College of Arts and Sciences': [
+                'Psychology',
+                'Biology',
+                'Mathematics',
+                'English',
+                'Political Science',
+                'Social Work',
+                'Chemistry',
+                'Physics'
+            ],
+            'College of Education': [
+                'Elementary Education',
+                'Secondary Education',
+                'Physical Education',
+                'Special Education',
+                'Early Childhood Education'
+            ],
+            'College of Computer Studies': [
+                'Computer Science',
+                'Information Technology',
+                'Information Systems',
+                'Computer Technology',
+                'Data Science'
+            ],
+            'College of Nursing': [
+                'Bachelor of Science in Nursing'
+            ],
+            'College of Medicine': [
+                'Doctor of Medicine',
+                'Medical Technology',
+                'Physical Therapy',
+                'Occupational Therapy',
+                'Radiologic Technology'
+            ],
+            'College of Law': [
+                'Bachelor of Laws',
+                'Juris Doctor'
+            ],
+            'College of Architecture': [
+                'Architecture',
+                'Interior Design',
+                'Landscape Architecture'
+            ],
+            'College of Agriculture': [
+                'Agricultural Engineering',
+                'Agribusiness',
+                'Animal Science',
+                'Crop Science',
+                'Agricultural Economics'
+            ],
+            'College of Fine Arts': [
+                'Fine Arts',
+                'Multimedia Arts',
+                'Visual Communication',
+                'Performing Arts',
+                'Music'
+            ],
+            'College of Communication': [
+                'Mass Communication',
+                'Broadcasting',
+                'Journalism',
+                'Public Relations',
+                'Advertising'
+            ]
+        };
+        
+        // Handle department change to populate courses
+        document.getElementById('department').addEventListener('change', function() {
+            const department = this.value;
+            const courseSelect = document.getElementById('course');
+            
+            // Clear existing options
+            courseSelect.innerHTML = '';
+            
+            if (department && departmentCourses[department]) {
+                // Add default option
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Select course';
+                courseSelect.appendChild(defaultOption);
+                
+                // Add courses for selected department
+                departmentCourses[department].forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course;
+                    option.textContent = course;
+                    courseSelect.appendChild(option);
+                });
+                
+                courseSelect.disabled = false;
+            } else {
+                // No department selected
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'Select department first';
+                courseSelect.appendChild(option);
+                courseSelect.disabled = true;
+            }
+        });
         
         setTimeout(() => {
             const flashMessage = document.getElementById('flash-message');
