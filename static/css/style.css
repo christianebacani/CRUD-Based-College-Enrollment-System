@@ -62,6 +62,56 @@ body {
 .login-header .icon {
     font-size: 60px;
     margin-bottom: 10px;
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.login-header .icon::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: -1;
+}
+
+.login-header .icon:hover {
+    animation: capToss 0.6s ease-in-out;
+    filter: drop-shadow(0 8px 16px rgba(102, 126, 234, 0.4));
+}
+
+.login-header .icon:hover::before {
+    opacity: 1;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, rgba(102, 126, 234, 0.05) 50%, transparent 70%);
+}
+
+@keyframes capToss {
+    0% {
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
+    30% {
+        transform: translateY(-25px) rotate(-15deg) scale(1.15);
+    }
+    50% {
+        transform: translateY(-30px) rotate(-20deg) scale(1.2);
+    }
+    70% {
+        transform: translateY(-25px) rotate(-15deg) scale(1.15);
+    }
+    100% {
+        transform: translateY(0) rotate(0deg) scale(1);
+    }
 }
 
 .login-header h1 {
