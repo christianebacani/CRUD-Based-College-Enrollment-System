@@ -44,48 +44,62 @@
                     <div class="form-group">
                         <label for="student_id">Student ID *</label>
                         <input type="text" id="student_id" class="form-control" 
-                               placeholder="e.g., 2024-0001" required>
+                               placeholder="e.g., 2024-0001" pattern="\d{4}-\d{4}" 
+                               title="Format: YYYY-NNNN (e.g., 2024-0001)" 
+                               maxlength="9" required>
                     </div>
 
                     <div class="form-group">
                         <label for="first_name">First Name *</label>
                         <input type="text" id="first_name" class="form-control" 
-                               placeholder="First name" required>
+                               placeholder="First name" pattern="[a-zA-Z\s'-]+" 
+                               title="Only letters, spaces, hyphens, and apostrophes allowed" 
+                               minlength="2" maxlength="50" required>
                     </div>
 
                     <div class="form-group">
                         <label for="middle_name">Middle Name</label>
                         <input type="text" id="middle_name" class="form-control" 
-                               placeholder="Middle name">
+                               placeholder="Middle name" pattern="[a-zA-Z\s'-]+" 
+                               title="Only letters, spaces, hyphens, and apostrophes allowed" 
+                               maxlength="50">
                     </div>
 
                     <div class="form-group">
                         <label for="last_name">Last Name *</label>
                         <input type="text" id="last_name" class="form-control" 
-                               placeholder="Last name" required>
+                               placeholder="Last name" pattern="[a-zA-Z\s'-]+" 
+                               title="Only letters, spaces, hyphens, and apostrophes allowed" 
+                               minlength="2" maxlength="50" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="email">Email</label>
+                        <label for="email">Email *</label>
                         <input type="email" id="email" class="form-control" 
-                               placeholder="student@example.com">
+                               placeholder="student@example.com" 
+                               title="Enter a valid email address" 
+                               maxlength="100" required>
                     </div>
 
                     <div class="form-group">
                         <label for="phone">Phone</label>
                         <input type="tel" id="phone" class="form-control" 
-                               placeholder="+1234567890">
+                               placeholder="+1234567890 or (123) 456-7890" 
+                               pattern="[\d\s\-\+\(\)]+" 
+                               title="Enter a valid phone number" 
+                               maxlength="20">
                     </div>
 
                     <div class="form-group">
                         <label for="course">Course *</label>
                         <input type="text" id="course" class="form-control" 
-                               placeholder="e.g., Computer Science" required>
+                               placeholder="e.g., Computer Science" 
+                               minlength="2" maxlength="100" required>
                     </div>
 
                     <div class="form-group">
                         <label for="department">College Department *</label>
-                        <select id="department" class="form-control">
+                        <select id="department" class="form-control" required>
                             <option value="">Select department</option>
                             <option value="College of Engineering">College of Engineering</option>
                             <option value="College of Business Administration">College of Business Administration</option>
@@ -103,8 +117,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="year_level">Year Level</label>
-                        <select id="year_level" class="form-control">
+                        <label for="year_level">Year Level *</label>
+                        <select id="year_level" class="form-control" required>
                             <option value="">Select year level</option>
                             <option value="1st Year">1st Year</option>
                             <option value="2nd Year">2nd Year</option>
@@ -198,6 +212,15 @@
 
         window.onload = function() {
             loadStudents();
+            
+            // Prevent form submission on Enter or Tab
+            const studentForm = document.getElementById('studentForm');
+            if (studentForm) {
+                studentForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    return false;
+                });
+            }
             
             if (userRole !== 'admin') {
                 const formInputs = document.querySelectorAll('#studentForm input, #studentForm select');
