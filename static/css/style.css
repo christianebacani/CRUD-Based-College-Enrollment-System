@@ -362,6 +362,11 @@ body {
     margin-bottom: 20px;
 }
 
+/* Full width table when form is hidden (for regular users) */
+.dashboard-container:has(.table-panel):not(:has(.form-panel)) {
+    grid-template-columns: 1fr;
+}
+
 .form-panel, .table-panel {
     background: white;
     border-radius: 8px;
