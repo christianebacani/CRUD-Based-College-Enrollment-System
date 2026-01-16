@@ -100,13 +100,15 @@ def get_students():
             'id': student[0],
             'student_id': student[1],
             'first_name': student[2],
+            'middle_name': student[10] if student[10] else '',
             'last_name': student[3],
             'email': student[4] if student[4] else '',
             'phone': student[5] if student[5] else '',
             'course': student[6],
+            'department': student[11] if student[11] else '',
             'year_level': student[7] if student[7] else '',
-            'status': student[8],
-            'enrollment_date': student[9] if student[9] else ''
+            'enrollment_date': student[8] if student[8] else '',
+            'status': student[9]
         })
     
     return jsonify({'success': True, 'students': students_list})
@@ -128,13 +130,15 @@ def search_students():
             'id': student[0],
             'student_id': student[1],
             'first_name': student[2],
+            'middle_name': student[10] if student[10] else '',
             'last_name': student[3],
             'email': student[4] if student[4] else '',
             'phone': student[5] if student[5] else '',
             'course': student[6],
+            'department': student[11] if student[11] else '',
             'year_level': student[7] if student[7] else '',
-            'status': student[8],
-            'enrollment_date': student[9] if student[9] else ''
+            'enrollment_date': student[8] if student[8] else '',
+            'status': student[9]
         })
     
     return jsonify({'success': True, 'students': students_list})

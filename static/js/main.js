@@ -1,6 +1,30 @@
 let currentStudents = [];
 let selectedStudentId = null;
 
+// Helper function to capitalize words properly
+function capitalizeWords(str) {
+    if (!str) return '';
+    return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+}
+
+// Helper function to format phone number
+function formatPhoneNumber(phone) {
+    if (!phone) return '-';
+    // Remove all non-numeric characters
+    const cleaned = phone.replace(/\D/g, '');
+    
+    // Format as 0XXX XXX XXX for 10 digits
+    if (cleaned.length === 10) {
+        return `${cleaned.slice(0, 4)} ${cleaned.slice(4, 7)} ${cleaned.slice(7)}`;
+    }
+    // Format as X XXXX XXX XXX for 11 digits (remove + sign)
+    if (cleaned.length === 11) {
+        return `${cleaned.slice(0, 1)} ${cleaned.slice(1, 5)} ${cleaned.slice(5, 8)} ${cleaned.slice(8)}`;
+    }
+    // Return original if it doesn't match expected formats
+    return phone;
+}
+
 function checkAdminRole() {
     if (typeof userRole === 'undefined' || userRole !== 'admin') {
         showAlert('Access denied. Admin privileges required for this operation.', 'error');
@@ -31,22 +55,25 @@ function displayStudents(students) {
     const tableBody = document.getElementById('studentsTableBody');
     
     if (students.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="10" class="loading-message">No students found</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="9" class="loading-message">No students found</td></tr>';
         return;
     }
     
     tableBody.innerHTML = students.map(student => {
-        const enrollmentDate = student.enrollment_date ? 
-            new Date(student.enrollment_date).toLocaleString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            }) : '';
+        // Format name as "Last Name, First Name Middle Name"
+        const lastName = capitalizeWords(student.last_name || '');
+        const firstName = capitalizeWords(student.first_name || '');
+        const middleName = student.middle_name ? capitalizeWords(student.middle_name) : '';
+        const fullName = middleName ? `${lastName}, ${firstName} ${middleName}` : `${lastName}, ${firstName}`;
         
-        const fullName = [student.first_name, student.middle_name, student.last_name]
-            .filter(n => n).join(' ');
+        // Format phone number
+        const formattedPhone = formatPhoneNumber(student.phone);
+        
+        // Format department properly
+        const department = student.department || '-';
+        
+        // Capitalize status
+        const statusText = capitalizeWords(student.status || 'Unknown');
         
         return `
             <tr onclick="selectStudent('${student.student_id}')" data-student-id="${student.student_id}">
@@ -54,12 +81,11 @@ function displayStudents(students) {
                 <td><strong>${student.student_id}</strong></td>
                 <td>${fullName}</td>
                 <td>${student.email || '-'}</td>
-                <td>${student.phone || '-'}</td>
+                <td>${formattedPhone}</td>
                 <td>${student.course}</td>
-                <td>${student.department || '-'}</td>
+                <td>${department}</td>
                 <td>${student.year_level || '-'}</td>
-                <td><span class="status-badge status-${student.status.toLowerCase()}">${student.status}</span></td>
-                <td>${enrollmentDate}</td>
+                <td><span class="status-badge status-${student.status.toLowerCase()}">${statusText}</span></td>
             </tr>
         `;
     }).join('');
