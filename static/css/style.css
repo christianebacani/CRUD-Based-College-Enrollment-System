@@ -455,19 +455,17 @@ select.form-control {
     left: 20px;
     top: 50%;
     transform: translateY(-50%) translateX(-100px);
-    background: #667eea;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
     color: white;
-    width: 44px;
-    height: 44px;
-    border-radius: 8px;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
-    font-size: 18px;
-    font-weight: bold;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     z-index: 1000;
     opacity: 0;
@@ -483,18 +481,39 @@ select.form-control {
 }
 
 .floating-toggle-btn:hover {
-    background: #5568d3;
-    transform: translateY(-50%) translateX(0) scale(1.05);
-    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #5568d3 0%, #6941a5 100%);
+    transform: translateY(-50%) translateX(0) scale(1.08);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
 }
 
-/* Update icon based on form state */
+/* CSS Chevron Icon */
+.toggle-icon {
+    position: relative;
+    width: 12px;
+    height: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle-icon::before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-right: 3px solid white;
+    border-bottom: 3px solid white;
+    transform: rotate(-45deg);
+    transition: transform 0.3s ease;
+}
+
+/* Update chevron direction based on form state */
 .dashboard-container.form-collapsed .floating-toggle-btn .toggle-icon::before {
-    content: '▶';
+    transform: rotate(-45deg); /* Point right */
 }
 
 .dashboard-container:not(.form-collapsed) .floating-toggle-btn .toggle-icon::before {
-    content: '◀';
+    transform: rotate(135deg); /* Point left */
 }
 
 /* Left edge hover zone */
