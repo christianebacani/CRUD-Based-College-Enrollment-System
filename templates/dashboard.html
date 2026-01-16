@@ -169,9 +169,9 @@
                 <div class="search-box">
                     <input type="text" id="searchInput" class="form-control search-input" 
                            placeholder="🔍 Search by ID, name, or course..." 
-                           onkeyup="searchStudents()">
+                           onkeypress="if(event.key === 'Enter') handleSearchOrRefresh()">
                 </div>
-                <button onclick="loadStudents()" class="btn btn-primary">🔄 Refresh</button>
+                <button onclick="handleSearchOrRefresh()" id="searchRefreshBtn" class="btn btn-primary">🔍 Search</button>
                 <span class="record-count" id="recordCount">Total: 0 records</span>
             </div>
             <div class="panel-body">
