@@ -422,11 +422,89 @@ select.form-control {
     gap: 20px;
     margin-top: 20px;
     margin-bottom: 20px;
+    transition: grid-template-columns 0.3s ease;
+    position: relative;
+}
+
+/* Collapsed form state - table takes full width */
+.dashboard-container.form-collapsed {
+    grid-template-columns: 0fr 1fr;
+    gap: 0;
 }
 
 /* Full width table when form is hidden (for regular users) */
 .dashboard-container:has(.table-panel):not(:has(.form-panel)) {
     grid-template-columns: 1fr;
+}
+
+/* Hover zone on left edge to reveal toggle button */
+.dashboard-container::before {
+    content: '';
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 50px;
+    z-index: 999;
+    pointer-events: none;
+}
+
+/* Floating toggle button (hidden by default) */
+.floating-toggle-btn {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%) translateX(-100px);
+    background: #667eea;
+    border: none;
+    color: white;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Show button when hovering left edge or button itself */
+.floating-toggle-btn.visible,
+.floating-toggle-btn:hover {
+    transform: translateY(-50%) translateX(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.floating-toggle-btn:hover {
+    background: #5568d3;
+    transform: translateY(-50%) translateX(0) scale(1.05);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+/* Update icon based on form state */
+.dashboard-container.form-collapsed .floating-toggle-btn .toggle-icon::before {
+    content: '▶';
+}
+
+.dashboard-container:not(.form-collapsed) .floating-toggle-btn .toggle-icon::before {
+    content: '◀';
+}
+
+/* Left edge hover zone */
+.hover-zone-left {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 30px;
+    z-index: 998;
 }
 
 .form-panel, .table-panel {
@@ -446,6 +524,28 @@ select.form-control {
     font-size: 18px;
     font-weight: 600;
     margin: 0;
+}
+
+/* Collapsed form panel */
+.form-panel {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.form-panel.collapsed {
+    width: 0;
+    min-width: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+}
+
+.form-panel.collapsed .panel-header {
+    display: none;
+}
+
+.form-panel.collapsed .panel-body {
+    display: none;
 }
 
 .panel-body {
