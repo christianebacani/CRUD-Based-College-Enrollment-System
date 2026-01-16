@@ -54,6 +54,11 @@
                                    placeholder="First name" required>
                         </div>
                         <div class="form-group">
+                            <label for="middle_name">Middle Name</label>
+                            <input type="text" id="middle_name" class="form-control" 
+                                   placeholder="Middle name">
+                        </div>
+                        <div class="form-group">
                             <label for="last_name">Last Name *</label>
                             <input type="text" id="last_name" class="form-control" 
                                    placeholder="Last name" required>
@@ -76,6 +81,25 @@
                         <label for="course">Course *</label>
                         <input type="text" id="course" class="form-control" 
                                placeholder="e.g., Computer Science" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="department">College Department *</label>
+                        <select id="department" class="form-control">
+                            <option value="">Select department</option>
+                            <option value="College of Engineering">College of Engineering</option>
+                            <option value="College of Business Administration">College of Business Administration</option>
+                            <option value="College of Arts and Sciences">College of Arts and Sciences</option>
+                            <option value="College of Education">College of Education</option>
+                            <option value="College of Computer Studies">College of Computer Studies</option>
+                            <option value="College of Nursing">College of Nursing</option>
+                            <option value="College of Medicine">College of Medicine</option>
+                            <option value="College of Law">College of Law</option>
+                            <option value="College of Architecture">College of Architecture</option>
+                            <option value="College of Agriculture">College of Agriculture</option>
+                            <option value="College of Fine Arts">College of Fine Arts</option>
+                            <option value="College of Communication">College of Communication</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
@@ -143,6 +167,7 @@
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Course</th>
+                                <th>Department</th>
                                 <th>Year</th>
                                 <th>Status</th>
                                 <th>Enrolled</th>
@@ -150,7 +175,7 @@
                         </thead>
                         <tbody id="studentsTableBody">
                             <tr>
-                                <td colspan="9" class="loading-message">Loading students...</td>
+                                <td colspan="10" class="loading-message">Loading students...</td>
                             </tr>
                         </tbody>
                     </table>
