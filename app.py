@@ -164,7 +164,7 @@ def add_student():
         'course': data['course'],
         'department': data.get('department', ''),
         'year_level': data.get('year_level', ''),
-        'status': data.get('status', 'Active')
+        'status': data.get('status', 'Enrolled')
     })
     
     result = db.add_student(student_data)
@@ -194,7 +194,7 @@ def update_student(student_id):
         'course': data['course'],
         'department': data.get('department', ''),
         'year_level': data.get('year_level', ''),
-        'status': data.get('status', 'Active')
+        'status': data.get('status', 'Enrolled')
     })
     
     result = db.update_student(student_id, student_data)
