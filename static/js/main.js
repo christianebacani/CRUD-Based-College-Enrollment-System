@@ -60,14 +60,14 @@ function displayStudents(students) {
     }
     
     tableBody.innerHTML = students.map(student => {
-        // Format name as "Last Name, First Name Middle Name"
+        // Format name as "Last Name, First Name, Middle Name"
         const lastName = capitalizeWords(student.last_name || '');
         const firstName = capitalizeWords(student.first_name || '');
         const middleName = student.middle_name ? capitalizeWords(student.middle_name) : '';
-        const fullName = middleName ? `${lastName}, ${firstName} ${middleName}` : `${lastName}, ${firstName}`;
+        const fullName = middleName ? `${lastName}, ${firstName}, ${middleName}` : `${lastName}, ${firstName}`;
         
-        // Format phone number
-        const formattedPhone = formatPhoneNumber(student.phone);
+        // Display phone number without formatting
+        const phone = student.phone || '-';
         
         // Format department properly
         const department = student.department || '-';
@@ -81,7 +81,7 @@ function displayStudents(students) {
                 <td><strong>${student.student_id}</strong></td>
                 <td>${fullName}</td>
                 <td>${student.email || '-'}</td>
-                <td>${formattedPhone}</td>
+                <td>${phone}</td>
                 <td>${student.course}</td>
                 <td>${department}</td>
                 <td>${student.year_level || '-'}</td>
@@ -387,12 +387,35 @@ async function searchStudents() {
                 currentStudents = data.students;
                 displayStudents(currentStudents);
                 updateRecordCount(currentStudents.length, true);
+                
+                // Change button to Refresh
+                const btn = document.getElementById('searchRefreshBtn');
+                btn.innerHTML = '🔄 Refresh';
+                btn.setAttribute('data-mode', 'refresh');
             }
         } catch (error) {
             console.error('Error searching students:', error);
             showAlert('Error searching students', 'error');
         }
     }, 300);
+}
+
+function handleSearchOrRefresh() {
+    const btn = document.getElementById('searchRefreshBtn');
+    const mode = btn.getAttribute('data-mode');
+    
+    if (mode === 'refresh') {
+        // Reset to default view
+        document.getElementById('searchInput').value = '';
+        loadStudents();
+        
+        // Change button back to Search
+        btn.innerHTML = '🔍 Search';
+        btn.setAttribute('data-mode', 'search');
+    } else {
+        // Perform search
+        searchStudents();
+    }
 }
 
 function updateRecordCount(count, isSearch = false) {
