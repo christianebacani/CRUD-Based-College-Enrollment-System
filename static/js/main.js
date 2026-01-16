@@ -31,7 +31,7 @@ function displayStudents(students) {
     const tableBody = document.getElementById('studentsTableBody');
     
     if (students.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="9" class="loading-message">No students found</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="10" class="loading-message">No students found</td></tr>';
         return;
     }
     
@@ -45,14 +45,18 @@ function displayStudents(students) {
                 minute: '2-digit'
             }) : '';
         
+        const fullName = [student.first_name, student.middle_name, student.last_name]
+            .filter(n => n).join(' ');
+        
         return `
             <tr onclick="selectStudent('${student.student_id}')" data-student-id="${student.student_id}">
                 <td>${student.id}</td>
                 <td><strong>${student.student_id}</strong></td>
-                <td>${student.first_name} ${student.last_name}</td>
+                <td>${fullName}</td>
                 <td>${student.email || '-'}</td>
                 <td>${student.phone || '-'}</td>
                 <td>${student.course}</td>
+                <td>${student.department || '-'}</td>
                 <td>${student.year_level || '-'}</td>
                 <td><span class="status-badge status-${student.status.toLowerCase()}">${student.status}</span></td>
                 <td>${enrollmentDate}</td>
@@ -83,10 +87,12 @@ function populateForm(student) {
     document.getElementById('originalStudentId').value = student.student_id;
     document.getElementById('student_id').value = student.student_id;
     document.getElementById('first_name').value = student.first_name;
+    document.getElementById('middle_name').value = student.middle_name || '';
     document.getElementById('last_name').value = student.last_name;
     document.getElementById('email').value = student.email || '';
     document.getElementById('phone').value = student.phone || '';
     document.getElementById('course').value = student.course;
+    document.getElementById('department').value = student.department || '';
     document.getElementById('year_level').value = student.year_level || '';
     document.getElementById('status').value = student.status;
 }
@@ -107,10 +113,12 @@ function getFormData() {
     return {
         student_id: document.getElementById('student_id').value.trim(),
         first_name: document.getElementById('first_name').value.trim(),
+        middle_name: document.getElementById('middle_name').value.trim(),
         last_name: document.getElementById('last_name').value.trim(),
         email: document.getElementById('email').value.trim(),
         phone: document.getElementById('phone').value.trim(),
         course: document.getElementById('course').value.trim(),
+        department: document.getElementById('department').value,
         year_level: document.getElementById('year_level').value,
         status: document.getElementById('status').value
     };
