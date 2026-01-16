@@ -45,9 +45,9 @@
                     <div class="form-group">
                         <label for="student_id">Student ID *</label>
                         <input type="text" id="student_id" class="form-control" 
-                               placeholder="e.g., 2024-0001" pattern="\d{4}-\d{4}" 
-                               title="Format: YYYY-NNNN (e.g., 2024-0001)" 
-                               maxlength="9" required>
+                               placeholder="e.g., 25-00916" pattern="\d{2}-\d{5}" 
+                               title="Format: YY-NNNNN (e.g., 25-00916)" 
+                               maxlength="8" required>
                     </div>
 
                     <div class="form-group">
@@ -95,10 +95,10 @@
                         <label for="department">College Department *</label>
                         <select id="department" class="form-control" required>
                             <option value="">Select department</option>
-                            <option value="College of Engineering">College of Engineering</option>
-                            <option value="College of Architecture, Fine Arts and Design">College of Architecture, Fine Arts and Design</option>
-                            <option value="College of Engineering Technology">College of Engineering Technology</option>
-                            <option value="College of Informatics and Computing Sciences">College of Informatics and Computing Sciences</option>
+                            <option value="College of Engineering">College of Engineering (COE)</option>
+                            <option value="College of Architecture, Fine Arts and Design">College of Architecture, Fine Arts and Design (CAFAD)</option>
+                            <option value="College of Engineering Technology">College of Engineering Technology (CET)</option>
+                            <option value="College of Informatics and Computing Sciences">College of Informatics and Computing Sciences (CICS)</option>
                         </select>
                     </div>
 
@@ -196,45 +196,40 @@
     <script>
         const userRole = "{{ user.role }}";
         
-        // Course offerings by department
+        // Course offerings by department - BatStateU Alangilan Campus
         const departmentCourses = {
             'College of Engineering': [
-                'Civil Engineering',
-                'Mechanical Engineering',
-                'Electrical Engineering',
-                'Electronics Engineering',
-                'Chemical Engineering',
-                'Industrial Engineering',
-                'Computer Engineering'
+                'BS Chemical Engineering',
+                'BS Civil Engineering',
+                'BS Computer Engineering',
+                'BS Electrical Engineering',
+                'BS Electronics Engineering',
+                'BS Industrial Engineering',
+                'BS Mechanical Engineering',
+                'BS Mechatronics Engineering',
+                'BS Petroleum Engineering',
+                'BS Sanitary Engineering'
             ],
             'College of Architecture, Fine Arts and Design': [
-                'Architecture',
-                'Interior Design',
-                'Landscape Architecture',
-                'Fine Arts',
-                'Multimedia Arts',
-                'Visual Communication',
-                'Industrial Design',
-                'Environmental Design'
+                'Bachelor of Science in Architecture',
+                'Bachelor of Fine Arts and Design - Visual Communication'
             ],
             'College of Engineering Technology': [
-                'Civil Engineering Technology',
-                'Mechanical Engineering Technology',
-                'Electrical Engineering Technology',
-                'Electronics Engineering Technology',
-                'Automotive Technology',
-                'Construction Technology',
-                'Manufacturing Technology'
+                'BET Automotive Engineering Technology',
+                'BET Civil Engineering Technology',
+                'BET Computer Engineering Technology',
+                'BET Drafting Engineering Technology',
+                'BET Electrical Engineering Technology',
+                'BET Electronics Engineering Technology',
+                'BET Food Engineering Technology',
+                'BET Instrumentation and Control Engineering Technology',
+                'BET Mechanical Engineering Technology',
+                'BET Mechatronics Engineering Technology',
+                'BET Welding and Fabrication Engineering Technology'
             ],
             'College of Informatics and Computing Sciences': [
-                'Computer Science',
-                'Information Technology',
-                'Information Systems',
-                'Software Engineering',
-                'Data Science',
-                'Cybersecurity',
-                'Computer Engineering',
-                'Game Development'
+                'Bachelor of Science in Computer Science',
+                'Bachelor of Science in Information Technology'
             ]
         };
         
