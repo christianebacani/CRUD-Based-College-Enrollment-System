@@ -208,11 +208,11 @@ if __name__ == '__main__':
     print("=" * 60)
     print("🎓 Enrollment CRUD System - Web Version")
     print("=" * 60)
-    print("📍 Server starting at: http://localhost:5000")
+    print("📍 Server starting at: http://localhost:5001")
     print("🔐 Default credentials:")
     print("   Username: admin")
     print("   Password: admin123")
     print("=" * 60)
     print("\n✅ Server is running... (Press CTRL+C to stop)\n")
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=5001)
