@@ -155,10 +155,12 @@ def add_student():
     student_data = {
         'student_id': data['student_id'],
         'first_name': data['first_name'],
+        'middle_name': data.get('middle_name', ''),
         'last_name': data['last_name'],
         'email': data.get('email', ''),
         'phone': data.get('phone', ''),
         'course': data['course'],
+        'department': data.get('department', ''),
         'year_level': data.get('year_level', ''),
         'status': data.get('status', 'Active')
     }
@@ -182,10 +184,12 @@ def update_student(student_id):
     
     student_data = {
         'first_name': data['first_name'],
+        'middle_name': data.get('middle_name', ''),
         'last_name': data['last_name'],
         'email': data.get('email', ''),
         'phone': data.get('phone', ''),
         'course': data['course'],
+        'department': data.get('department', ''),
         'year_level': data.get('year_level', ''),
         'status': data.get('status', 'Active')
     }
@@ -202,7 +206,6 @@ def delete_student(student_id):
     
     result = db.delete_student(student_id)
     return jsonify(result)
-
 
 if __name__ == '__main__':
     print("=" * 60)

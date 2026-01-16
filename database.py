@@ -37,10 +37,12 @@ class Database:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 student_id TEXT UNIQUE NOT NULL,
                 first_name TEXT NOT NULL,
+                middle_name TEXT,
                 last_name TEXT NOT NULL,
                 email TEXT,
                 phone TEXT,
                 course TEXT NOT NULL,
+                department TEXT,
                 year_level TEXT,
                 enrollment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 status TEXT DEFAULT 'Active'
@@ -129,15 +131,17 @@ class Database:
             cursor = conn.cursor()
             
             cursor.execute('''
-                INSERT INTO students (student_id, first_name, last_name, email, phone, course, year_level, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO students (student_id, first_name, middle_name, last_name, email, phone, course, department, year_level, status)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 student_data['student_id'],
                 student_data['first_name'],
+                student_data.get('middle_name', ''),
                 student_data['last_name'],
                 student_data['email'],
                 student_data['phone'],
                 student_data['course'],
+                student_data.get('department', ''),
                 student_data['year_level'],
                 student_data.get('status', 'Active')
             ))
@@ -196,15 +200,17 @@ class Database:
             
             cursor.execute('''
                 UPDATE students 
-                SET first_name = ?, last_name = ?, email = ?, phone = ?, 
-                    course = ?, year_level = ?, status = ?
+                SET first_name = ?, middle_name = ?, last_name = ?, email = ?, phone = ?, 
+                    course = ?, department = ?, year_level = ?, status = ?
                 WHERE student_id = ?
             ''', (
                 student_data['first_name'],
+                student_data.get('middle_name', ''),
                 student_data['last_name'],
                 student_data['email'],
                 student_data['phone'],
                 student_data['course'],
+                student_data.get('department', ''),
                 student_data['year_level'],
                 student_data['status'],
                 student_id
