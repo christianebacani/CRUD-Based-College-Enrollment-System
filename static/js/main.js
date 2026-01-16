@@ -91,8 +91,19 @@ function populateForm(student) {
     document.getElementById('last_name').value = student.last_name;
     document.getElementById('email').value = student.email || '';
     document.getElementById('phone').value = student.phone || '';
-    document.getElementById('course').value = student.course;
+    
+    // Set department first to trigger course population
     document.getElementById('department').value = student.department || '';
+    
+    // Trigger change event to populate courses
+    const event = new Event('change');
+    document.getElementById('department').dispatchEvent(event);
+    
+    // Set course after department courses are populated
+    setTimeout(() => {
+        document.getElementById('course').value = student.course;
+    }, 10);
+    
     document.getElementById('year_level').value = student.year_level || '';
     document.getElementById('status').value = student.status;
 }
@@ -205,9 +216,9 @@ function validateFormData(data, isUpdate = false) {
         }
     }
 
-    // Course validation
-    if (data.course.length < 2 || data.course.length > 100) {
-        showAlert('Course name must be between 2 and 100 characters', 'error');
+    // Course validation (now a dropdown selection)
+    if (!data.course) {
+        showAlert('Please select a Course', 'error');
         return false;
     }
 
