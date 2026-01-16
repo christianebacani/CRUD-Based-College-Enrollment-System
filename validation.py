@@ -28,11 +28,11 @@ def validate_student_data(data, is_update=False):
             field_name = field.replace('_', ' ').title()
             return {'valid': False, 'message': f'{field_name} is required'}
     
-    # Student ID validation (YYYY-NNNN format)
+    # Student ID validation (YY-NNNNN format)
     if not is_update or 'student_id' in data:
         student_id = data.get('student_id', '').strip()
-        if not re.match(r'^\d{4}-\d{4}$', student_id):
-            return {'valid': False, 'message': 'Student ID must be in format YYYY-NNNN (e.g., 2024-0001)'}
+        if not re.match(r'^\d{2}-\d{5}$', student_id):
+            return {'valid': False, 'message': 'Student ID must be in format YY-NNNNN (e.g., 25-00916)'}
     
     # Name validation - only letters, spaces, hyphens, and apostrophes
     name_pattern = r"^[a-zA-Z\s'\-]+$"
