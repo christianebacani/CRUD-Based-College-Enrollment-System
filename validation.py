@@ -85,8 +85,11 @@ def validate_student_data(data, is_update=False):
         if len(digits_only) < 7 or len(digits_only) > 15:
             return {'valid': False, 'message': 'Phone number must contain between 7 and 15 digits'}
     
-    # Course validation
+    # Course validation (from dropdown selection)
     course = data.get('course', '').strip()
+    if not course:
+        return {'valid': False, 'message': 'Please select a Course'}
+    
     if len(course) < 2 or len(course) > 100:
         return {'valid': False, 'message': 'Course name must be between 2 and 100 characters'}
     
