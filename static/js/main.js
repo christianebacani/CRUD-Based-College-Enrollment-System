@@ -148,10 +148,10 @@ function validateFormData(data, isUpdate = false) {
         return false;
     }
 
-    // Student ID format validation (e.g., 2024-0001, 2024-1234)
-    const studentIdPattern = /^\d{4}-\d{4}$/;
+    // Student ID format validation (e.g., 25-00916, 26-12345)
+    const studentIdPattern = /^\d{2}-\d{5}$/;
     if (!studentIdPattern.test(data.student_id)) {
-        showAlert('Student ID must be in format YYYY-NNNN (e.g., 2024-0001)', 'error');
+        showAlert('Student ID must be in format YY-NNNNN (e.g., 25-00916)', 'error');
         return false;
     }
 
