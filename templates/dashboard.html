@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body class="dashboard-page">
+    <!-- Hover zone on left edge to trigger toggle button -->
+    <div class="hover-zone-left"></div>
+    
     <nav class="navbar">
         <div class="navbar-brand">
             <span class="icon">📚</span>
@@ -34,7 +37,12 @@
 
     <div class="container dashboard-container">
         {% if user.role == 'admin' %}
-        <div class="form-panel">
+        <!-- Floating toggle button when form is collapsed -->
+        <button type="button" class="floating-toggle-btn" id="floatingToggleBtn" title="Show student form">
+            <span class="toggle-icon">▶</span>
+        </button>
+        
+        <div class="form-panel" id="formPanel">
             <div class="panel-header">
                 <h2>Student Information</h2>
             </div>
@@ -286,6 +294,50 @@
                 studentForm.addEventListener('submit', function(e) {
                     e.preventDefault();
                     return false;
+                });
+            }
+            
+            // Form panel toggle functionality
+            const floatingToggleBtn = document.getElementById('floatingToggleBtn');
+            const formPanel = document.getElementById('formPanel');
+            const dashboardContainer = document.querySelector('.dashboard-container');
+            const hoverZone = document.querySelector('.hover-zone-left');
+            
+            if (formPanel && floatingToggleBtn) {
+                // Check localStorage for saved state
+                const isCollapsed = localStorage.getItem('formPanelCollapsed') === 'true';
+                if (isCollapsed) {
+                    formPanel.classList.add('collapsed');
+                    dashboardContainer.classList.add('form-collapsed');
+                }
+                
+                // Show button on left edge hover
+                if (hoverZone) {
+                    hoverZone.addEventListener('mouseenter', function() {
+                        floatingToggleBtn.classList.add('visible');
+                    });
+                    
+                    hoverZone.addEventListener('mouseleave', function(e) {
+                        // Keep visible if hovering over the button itself
+                        if (!floatingToggleBtn.matches(':hover')) {
+                            floatingToggleBtn.classList.remove('visible');
+                        }
+                    });
+                    
+                    floatingToggleBtn.addEventListener('mouseleave', function() {
+                        if (!hoverZone.matches(':hover')) {
+                            floatingToggleBtn.classList.remove('visible');
+                        }
+                    });
+                }
+                
+                // Toggle function
+                floatingToggleBtn.addEventListener('click', function() {
+                    const isCurrentlyCollapsed = formPanel.classList.toggle('collapsed');
+                    dashboardContainer.classList.toggle('form-collapsed');
+                    
+                    // Save state to localStorage
+                    localStorage.setItem('formPanelCollapsed', isCurrentlyCollapsed);
                 });
             }
         };
