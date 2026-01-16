@@ -125,10 +125,98 @@ function getFormData() {
 }
 
 function validateFormData(data, isUpdate = false) {
-    if (!data.student_id || !data.first_name || !data.last_name || !data.course) {
-        showAlert('Please fill in all required fields (Student ID, First Name, Last Name, Course)', 'warning');
+    // Required fields validation
+    if (!data.student_id || !data.first_name || !data.last_name || !data.email || !data.course || !data.year_level) {
+        showAlert('Please fill in all required fields (Student ID, First Name, Last Name, Email, Course, Year Level)', 'warning');
         return false;
     }
+
+    // Department validation
+    if (!data.department) {
+        showAlert('Please select a College Department', 'warning');
+        return false;
+    }
+
+    // Student ID format validation (e.g., 2024-0001, 2024-1234)
+    const studentIdPattern = /^\d{4}-\d{4}$/;
+    if (!studentIdPattern.test(data.student_id)) {
+        showAlert('Student ID must be in format YYYY-NNNN (e.g., 2024-0001)', 'error');
+        return false;
+    }
+
+    // Name validation (no numbers or special characters except hyphens, apostrophes, and spaces)
+    const namePattern = /^[a-zA-Z\s'-]+$/;
+    
+    if (!namePattern.test(data.first_name)) {
+        showAlert('First Name should only contain letters, spaces, hyphens, and apostrophes', 'error');
+        return false;
+    }
+
+    if (data.middle_name && !namePattern.test(data.middle_name)) {
+        showAlert('Middle Name should only contain letters, spaces, hyphens, and apostrophes', 'error');
+        return false;
+    }
+
+    if (!namePattern.test(data.last_name)) {
+        showAlert('Last Name should only contain letters, spaces, hyphens, and apostrophes', 'error');
+        return false;
+    }
+
+    // Name length validation
+    if (data.first_name.length < 2 || data.first_name.length > 50) {
+        showAlert('First Name must be between 2 and 50 characters', 'error');
+        return false;
+    }
+
+    if (data.last_name.length < 2 || data.last_name.length > 50) {
+        showAlert('Last Name must be between 2 and 50 characters', 'error');
+        return false;
+    }
+
+    if (data.middle_name && data.middle_name.length > 50) {
+        showAlert('Middle Name must not exceed 50 characters', 'error');
+        return false;
+    }
+
+    // Email validation (required)
+    if (!data.email) {
+        showAlert('Email address is required', 'error');
+        return false;
+    }
+    
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailPattern.test(data.email)) {
+        showAlert('Please enter a valid email address (e.g., student@example.com)', 'error');
+        return false;
+    }
+
+    // Phone validation (if provided)
+    if (data.phone) {
+        const phonePattern = /^[\d\s\-\+\(\)]+$/;
+        if (!phonePattern.test(data.phone)) {
+            showAlert('Phone number should only contain numbers, spaces, hyphens, plus signs, and parentheses', 'error');
+            return false;
+        }
+        
+        const digitsOnly = data.phone.replace(/\D/g, '');
+        if (digitsOnly.length < 7 || digitsOnly.length > 15) {
+            showAlert('Phone number must contain between 7 and 15 digits', 'error');
+            return false;
+        }
+    }
+
+    // Course validation
+    if (data.course.length < 2 || data.course.length > 100) {
+        showAlert('Course name must be between 2 and 100 characters', 'error');
+        return false;
+    }
+
+    // Year level validation (required)
+    if (!data.year_level) {
+        showAlert('Please select a Year Level', 'error');
+        return false;
+    }
+
     return true;
 }
 
