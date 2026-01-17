@@ -469,8 +469,8 @@ select.form-control {
 
 .dashboard-container {
     display: grid;
-    grid-template-columns: 380px 1fr;
-    gap: 20px;
+    grid-template-columns: 320px 1fr;
+    gap: 12px;
     margin-top: 20px;
     margin-bottom: 20px;
     transition: grid-template-columns 0.3s ease;
@@ -730,8 +730,9 @@ select.form-control {
 
 .data-table {
     width: 100%;
+    min-width: 1000px;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: 12px;
     border: 1px solid #ddd;
     table-layout: fixed;
 }
@@ -739,47 +740,56 @@ select.form-control {
 /* Column width optimization for all 9 columns */
 .data-table th:nth-child(1), /* ID */
 .data-table td:nth-child(1) {
-    width: 4%;
+    width: 40px;
+    min-width: 40px;
 }
 
 .data-table th:nth-child(2), /* Student ID */
 .data-table td:nth-child(2) {
-    width: 9%;
+    width: 90px;
+    min-width: 90px;
 }
 
 .data-table th:nth-child(3), /* Name */
 .data-table td:nth-child(3) {
-    width: 18%;
+    width: 160px;
+    min-width: 140px;
 }
 
 .data-table th:nth-child(4), /* Email */
 .data-table td:nth-child(4) {
-    width: 17%;
+    width: 170px;
+    min-width: 150px;
 }
 
 .data-table th:nth-child(5), /* Phone */
 .data-table td:nth-child(5) {
-    width: 11%;
+    width: 110px;
+    min-width: 110px;
 }
 
 .data-table th:nth-child(6), /* Course */
 .data-table td:nth-child(6) {
-    width: 18%;
+    width: 200px;
+    min-width: 180px;
 }
 
-.data-table th:nth-child(7), /* Dept */
+.data-table th:nth-child(7), /* Department */
 .data-table td:nth-child(7) {
-    width: 7%;
+    width: 80px;
+    min-width: 70px;
 }
 
 .data-table th:nth-child(8), /* Year */
 .data-table td:nth-child(8) {
-    width: 8%;
+    width: 70px;
+    min-width: 70px;
 }
 
 .data-table th:nth-child(9), /* Status */
 .data-table td:nth-child(9) {
-    width: 8%;
+    width: 110px;
+    min-width: 110px;
 }
 
 .data-table thead {
@@ -791,10 +801,10 @@ select.form-control {
 }
 
 .data-table th {
-    padding: 10px 8px;
+    padding: 10px 6px;
     text-align: left;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 12px;
     border-bottom: 2px solid #5568d3;
     border-right: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -803,8 +813,34 @@ select.form-control {
     border-right: none;
 }
 
+/* Resizable column handles (Excel-like) */
+.column-resizer {
+    position: absolute;
+    top: 0;
+    right: -3px;
+    width: 6px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 20;
+    background: transparent;
+}
+
+.column-resizer:hover {
+    background: rgba(102, 126, 234, 0.3);
+    border-right: 2px solid #667eea;
+}
+
+.data-table th.resizing {
+    background: #5568d3;
+}
+
+.data-table th.resizing .column-resizer {
+    background: #667eea;
+    border-right: 2px solid #667eea;
+}
+
 .data-table td {
-    padding: 10px 8px;
+    padding: 9px 6px;
     border-bottom: 1px solid #eee;
     border-right: 1px solid #eee;
     overflow: hidden;
