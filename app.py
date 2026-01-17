@@ -41,7 +41,6 @@ def login():
             session['username'] = result['username']
             session['full_name'] = result['full_name']
             session['role'] = result['role']
-            flash(f'Welcome back, {result["full_name"]}!', 'success')
             return redirect(url_for('dashboard'))
         else:
             flash(result['message'], 'error')
