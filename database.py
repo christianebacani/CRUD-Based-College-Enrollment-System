@@ -249,12 +249,31 @@ class Database:
         except Exception as e:
             return {'success': False, 'message': f'Database error: {str(e)}'}
     
-    def get_all_students(self):
+    def get_all_students(self, sort_column='id', sort_direction='asc'):
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
             
-            cursor.execute('SELECT * FROM students ORDER BY enrollment_date DESC')
+            # Validate direction
+            direction = 'ASC' if sort_direction.lower() == 'asc' else 'DESC'
+            
+            # Validate sort column to prevent SQL injection
+            valid_columns = {
+                'id': f'id {direction}',
+                'student_id': f'student_id {direction}',
+                'name': f'last_name {direction}, first_name {direction}, middle_name {direction}',
+                'course': f'course {direction}',
+                'department': f'department {direction}',
+                'year_level': f'year_level {direction}',
+                'status': f'status {direction}'
+            }
+            
+            # Default to id if invalid column
+            order_by = valid_columns.get(sort_column, f'id {direction}')
+            
+            # Build query with ORDER BY
+            query = f'SELECT * FROM students ORDER BY {order_by}'
+            cursor.execute(query)
             students = cursor.fetchall()
             
             conn.close()

@@ -102,11 +102,15 @@ def get_students():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 15, type=int)
     
+    # Get sort parameters
+    sort_column = request.args.get('sort_column', 'id')
+    sort_direction = request.args.get('sort_direction', 'asc')
+    
     # Ensure valid values
     page = max(1, page)
     per_page = min(max(1, per_page), 100)  # Max 100 records per page
     
-    students = db.get_all_students()
+    students = db.get_all_students(sort_column=sort_column, sort_direction=sort_direction)
     total_records = len(students)
     
     # Calculate pagination
