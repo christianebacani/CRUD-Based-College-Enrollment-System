@@ -39,8 +39,14 @@ def login():
         if result['success']:
             session['user_id'] = result['user_id']
             session['username'] = result['username']
-            session['full_name'] = result['full_name']
             session['role'] = result['role']
+            
+            # Special case: default admin account shows full name in welcome message
+            if result['username'] == 'admin':
+                session['first_name'] = result.get('full_name', 'System Administrator')
+            else:
+                session['first_name'] = result.get('first_name', result.get('full_name', '').split()[0])
+            
             return redirect(url_for('dashboard'))
         else:
             flash(result['message'], 'error')
@@ -52,17 +58,19 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        full_name = request.form.get('full_name', '').strip()
+        first_name = request.form.get('first_name', '').strip()
+        middle_name = request.form.get('middle_name', '').strip()
+        last_name = request.form.get('last_name', '').strip()
         email = request.form.get('email', '').strip()
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '')
         role = request.form.get('role', 'user')
         
-        if not all([full_name, username, password]):
+        if not all([first_name, last_name, username, password]):
             flash('Please fill in all required fields', 'error')
             return render_template('register.html')
         
-        result = db.create_user(username, password, full_name, email, role)
+        result = db.create_user(username, password, first_name, last_name, middle_name, email, role)
         
         if result['success']:
             flash('Account created successfully! Please login.', 'success')

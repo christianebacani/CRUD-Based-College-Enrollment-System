@@ -27,6 +27,9 @@ class Database:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
+                first_name TEXT NOT NULL,
+                middle_name TEXT,
+                last_name TEXT NOT NULL,
                 full_name TEXT NOT NULL,
                 email TEXT,
                 role TEXT DEFAULT 'user',
@@ -68,9 +71,9 @@ class Database:
             if cursor.fetchone() is None:
                 hashed_password = self.hash_password("admin123")
                 cursor.execute('''
-                    INSERT INTO users (username, password, full_name, role)
-                    VALUES (?, ?, ?, ?)
-                ''', ("admin", hashed_password, "System Administrator", "admin"))
+                    INSERT INTO users (username, password, first_name, middle_name, last_name, full_name, role)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                ''', ("admin", hashed_password, "System", "", "Administrator", "System Administrator", "admin"))
                 conn.commit()
                 print("Default admin user created (username: admin, password: admin123)")
             
@@ -89,7 +92,7 @@ class Database:
             
             hashed_password = self.hash_password(password)
             cursor.execute('''
-                SELECT id, username, full_name, role 
+                SELECT id, username, first_name, middle_name, last_name, full_name, role 
                 FROM users 
                 WHERE username = ? AND password = ?
             ''', (username, hashed_password))
@@ -102,8 +105,11 @@ class Database:
                     'success': True,
                     'user_id': user[0],
                     'username': user[1],
-                    'full_name': user[2],
-                    'role': user[3]
+                    'first_name': user[2],
+                    'middle_name': user[3],
+                    'last_name': user[4],
+                    'full_name': user[5],
+                    'role': user[6]
                 }
             else:
                 return {'success': False, 'message': 'Invalid username or password'}
@@ -111,28 +117,63 @@ class Database:
         except Exception as e:
             return {'success': False, 'message': f'Database error: {str(e)}'}
     
-    def create_user(self, username, password, full_name, email="", role="user"):
+    def create_user(self, username, password, first_name, last_name, middle_name="", email="", role="user"):
         conn = None
         try:
+            import re
+            
             # Validate required fields
             if not username or not username.strip():
                 return {'success': False, 'message': 'Username is required'}
             if not password:
                 return {'success': False, 'message': 'Password is required'}
-            if not full_name or not full_name.strip():
-                return {'success': False, 'message': 'Full name is required'}
+            if not first_name or not first_name.strip():
+                return {'success': False, 'message': 'First name is required'}
+            if not last_name or not last_name.strip():
+                return {'success': False, 'message': 'Last name is required'}
+            
+            # Validate first name - only letters and spaces allowed
+            if not re.match(r"^[a-zA-Z\s]+$", first_name.strip()):
+                return {'success': False, 'message': 'First name should only contain letters and spaces'}
+            
+            if len(first_name.strip()) < 2 or len(first_name.strip()) > 50:
+                return {'success': False, 'message': 'First name must be between 2 and 50 characters'}
+            
+            # Validate last name - only letters and spaces allowed
+            if not re.match(r"^[a-zA-Z\s]+$", last_name.strip()):
+                return {'success': False, 'message': 'Last name should only contain letters and spaces'}
+            
+            if len(last_name.strip()) < 2 or len(last_name.strip()) > 50:
+                return {'success': False, 'message': 'Last name must be between 2 and 50 characters'}
+            
+            # Validate middle name if provided - only letters and spaces allowed
+            if middle_name and middle_name.strip():
+                if not re.match(r"^[a-zA-Z\s]+$", middle_name.strip()):
+                    return {'success': False, 'message': 'Middle name should only contain letters and spaces'}
+                
+                if len(middle_name.strip()) > 50:
+                    return {'success': False, 'message': 'Middle name must not exceed 50 characters'}
             
             conn = self.get_connection()
             cursor = conn.cursor()
             
-            # Capitalize and standardize full name (e.g., "john doe" -> "John Doe")
-            formatted_full_name = ' '.join(word.capitalize() for word in full_name.strip().split())
+            # Capitalize and standardize names
+            formatted_first_name = ' '.join(word.capitalize() for word in first_name.strip().split())
+            formatted_last_name = ' '.join(word.capitalize() for word in last_name.strip().split())
+            formatted_middle_name = ' '.join(word.capitalize() for word in middle_name.strip().split()) if middle_name else ""
+            
+            # Create full name for display/compatibility
+            if formatted_middle_name:
+                full_name = f"{formatted_first_name} {formatted_middle_name} {formatted_last_name}"
+            else:
+                full_name = f"{formatted_first_name} {formatted_last_name}"
             
             hashed_password = self.hash_password(password)
             cursor.execute('''
-                INSERT INTO users (username, password, full_name, email, role)
-                VALUES (?, ?, ?, ?, ?)
-            ''', (username.strip(), hashed_password, formatted_full_name, email, role))
+                INSERT INTO users (username, password, first_name, middle_name, last_name, full_name, email, role)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (username.strip(), hashed_password, formatted_first_name, formatted_middle_name, 
+                  formatted_last_name, full_name, email, role))
             
             conn.commit()
             return {'success': True, 'message': 'User created successfully'}
