@@ -33,6 +33,20 @@ function formatPhoneNumber(phone) {
     return phone;
 }
 
+// Helper function to get department acronym
+function getDepartmentAcronym(department) {
+    if (!department) return '-';
+    
+    const acronyms = {
+        'College of Informatics and Computing Sciences': 'CICS',
+        'College of Engineering': 'COE',
+        'College of Architecture, Fine Arts and Design': 'CAFAD',
+        'College of Engineering Technology': 'CET'
+    };
+    
+    return acronyms[department] || department;
+}
+
 function checkAdminRole() {
     if (typeof userRole === 'undefined' || userRole !== 'admin') {
         showAlert('Access denied. Admin privileges required for this operation.', 'error');
@@ -86,8 +100,8 @@ function displayStudents(students) {
         // Format and display phone number with dashes (09XX-XXX-XXXX)
         const phone = formatPhoneNumber(student.phone);
         
-        // Format department properly
-        const department = student.department || '-';
+        // Get department acronym
+        const department = getDepartmentAcronym(student.department);
         
         // Capitalize status and handle null/undefined
         const status = student.status || 'Unknown';
@@ -568,8 +582,132 @@ if (phoneInput) {
 
 // Ensure loadStudents is called when DOM is ready (fallback)
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadStudents);
+    document.addEventListener('DOMContentLoaded', function() {
+        loadStudents();
+        initResizableColumns();
+    });
 } else {
     // DOM is already ready, call loadStudents immediately
     loadStudents();
+    initResizableColumns();
+}
+
+// ============ RESIZABLE COLUMNS FEATURE (Excel-like) ============
+function initResizableColumns() {
+    const table = document.querySelector('.data-table');
+    if (!table) return;
+    
+    const thead = table.querySelector('thead');
+    if (!thead) return;
+    
+    const ths = thead.querySelectorAll('th');
+    let currentResizer = null;
+    let currentTh = null;
+    let startX = 0;
+    let startWidth = 0;
+    
+    // Add resize handles to each column header (except last one)
+    ths.forEach((th, index) => {
+        if (index < ths.length - 1) { // Skip last column
+            const resizer = document.createElement('div');
+            resizer.className = 'column-resizer';
+            th.style.position = 'relative';
+            th.appendChild(resizer);
+            
+            resizer.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+                currentResizer = resizer;
+                currentTh = th;
+                startX = e.pageX;
+                startWidth = th.offsetWidth;
+                
+                document.addEventListener('mousemove', handleMouseMove);
+                document.addEventListener('mouseup', handleMouseUp);
+                
+                // Add resizing class for visual feedback
+                th.classList.add('resizing');
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+            });
+        }
+    });
+    
+    function handleMouseMove(e) {
+        if (currentTh) {
+            const diff = e.pageX - startX;
+            const newWidth = startWidth + diff;
+            
+            // Minimum column width of 50px
+            if (newWidth >= 50) {
+                const percentage = (newWidth / table.offsetWidth) * 100;
+                const columnIndex = Array.from(ths).indexOf(currentTh) + 1;
+                
+                // Apply width to both th and corresponding td cells
+                currentTh.style.width = percentage + '%';
+                
+                // Update all td cells in this column
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const cell = row.querySelector(`td:nth-child(${columnIndex})`);
+                    if (cell) {
+                        cell.style.width = percentage + '%';
+                    }
+                });
+                
+                // Save column widths to localStorage
+                saveColumnWidths();
+            }
+        }
+    }
+    
+    function handleMouseUp() {
+        if (currentTh) {
+            currentTh.classList.remove('resizing');
+        }
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+        currentResizer = null;
+        currentTh = null;
+    }
+    
+    // Save column widths to localStorage
+    function saveColumnWidths() {
+        const widths = {};
+        ths.forEach((th, index) => {
+            widths[index] = th.style.width || '';
+        });
+        localStorage.setItem('tableColumnWidths', JSON.stringify(widths));
+    }
+    
+    // Load saved column widths from localStorage
+    function loadColumnWidths() {
+        const savedWidths = localStorage.getItem('tableColumnWidths');
+        if (savedWidths) {
+            try {
+                const widths = JSON.parse(savedWidths);
+                ths.forEach((th, index) => {
+                    if (widths[index]) {
+                        th.style.width = widths[index];
+                        
+                        // Apply to corresponding td cells
+                        const columnIndex = index + 1;
+                        const rows = table.querySelectorAll('tbody tr');
+                        rows.forEach(row => {
+                            const cell = row.querySelector(`td:nth-child(${columnIndex})`);
+                            if (cell) {
+                                cell.style.width = widths[index];
+                            }
+                        });
+                    }
+                });
+            } catch (e) {
+                console.error('Error loading column widths:', e);
+            }
+        }
+    }
+    
+    // Load saved widths on init
+    loadColumnWidths();
 }
