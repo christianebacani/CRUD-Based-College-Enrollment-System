@@ -7,21 +7,29 @@ function capitalizeWords(str) {
     return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
 }
 
-// Helper function to format phone number
+// Helper function to format phone number (Philippine format: 09XX-XXX-XXXX)
 function formatPhoneNumber(phone) {
     if (!phone) return '-';
     // Remove all non-numeric characters
     const cleaned = phone.replace(/\D/g, '');
     
-    // Format as 0XXX XXX XXX for 10 digits
-    if (cleaned.length === 10) {
-        return `${cleaned.slice(0, 4)} ${cleaned.slice(4, 7)} ${cleaned.slice(7)}`;
+    // Handle international format +639XXXXXXXXX (12 digits starting with 63)
+    if (cleaned.length === 12 && cleaned.startsWith('63')) {
+        const localNumber = '0' + cleaned.slice(2); // Convert 639XX to 09XX
+        return `${localNumber.slice(0, 4)}-${localNumber.slice(4, 7)}-${localNumber.slice(7)}`;
     }
-    // Format as X XXXX XXX XXX for 11 digits (remove + sign)
-    if (cleaned.length === 11) {
-        return `${cleaned.slice(0, 1)} ${cleaned.slice(1, 5)} ${cleaned.slice(5, 8)} ${cleaned.slice(8)}`;
+    
+    // Format as 09XX-XXX-XXXX for 11 digits starting with 09
+    if (cleaned.length === 11 && cleaned.startsWith('09')) {
+        return `${cleaned.slice(0, 4)}-${cleaned.slice(4, 7)}-${cleaned.slice(7)}`;
     }
-    // Return original if it doesn't match expected formats
+    
+    // If already formatted correctly, return as-is
+    if (/^09\d{2}-\d{3}-\d{4}$/.test(phone)) {
+        return phone;
+    }
+    
+    // Return original if it doesn't match expected format
     return phone;
 }
 
@@ -75,8 +83,8 @@ function displayStudents(students) {
         const middleName = student.middle_name ? capitalizeWords(student.middle_name) : '';
         const fullName = middleName ? `${lastName}, ${firstName}, ${middleName}` : `${lastName}, ${firstName}`;
         
-        // Display phone number without formatting
-        const phone = student.phone || '-';
+        // Format and display phone number with dashes (09XX-XXX-XXXX)
+        const phone = formatPhoneNumber(student.phone);
         
         // Format department properly
         const department = student.department || '-';
@@ -298,19 +306,16 @@ function validateFormData(data, isUpdate = false) {
         return false;
     }
 
-    // Phone validation (if provided)
-    if (data.phone) {
-        const phonePattern = /^[\d\s\-\+\(\)]+$/;
-        if (!phonePattern.test(data.phone)) {
-            showAlert('Phone number should only contain numbers, spaces, hyphens, plus signs, and parentheses', 'error');
-            return false;
-        }
-        
-        const digitsOnly = data.phone.replace(/\D/g, '');
-        if (digitsOnly.length < 7 || digitsOnly.length > 15) {
-            showAlert('Phone number must contain between 7 and 15 digits', 'error');
-            return false;
-        }
+    // Phone validation (required - Philippine mobile format: 09XX-XXX-XXXX)
+    if (!data.phone) {
+        showAlert('Phone number is required', 'error');
+        return false;
+    }
+    
+    const phonePattern = /^09\d{2}-\d{3}-\d{4}$/;
+    if (!phonePattern.test(data.phone)) {
+        showAlert('Phone number must be in format 09XX-XXX-XXXX (e.g., 0912-345-6789)', 'error');
+        return false;
     }
 
     // Course validation (now a dropdown selection)
@@ -529,6 +534,37 @@ document.addEventListener('click', function(e) {
         deselectRow();
     }
 });
+
+// Auto-format phone number as user types (09XX-XXX-XXXX)
+const phoneInput = document.getElementById('phone');
+if (phoneInput) {
+    phoneInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+        
+        // Limit to 11 digits
+        if (value.length > 11) {
+            value = value.slice(0, 11);
+        }
+        
+        // Format as 09XX-XXX-XXXX
+        if (value.length >= 4) {
+            value = value.slice(0, 4) + '-' + value.slice(4);
+        }
+        if (value.length >= 8) {
+            value = value.slice(0, 8) + '-' + value.slice(8);
+        }
+        
+        e.target.value = value;
+    });
+    
+    // Prevent non-numeric input except dashes
+    phoneInput.addEventListener('keypress', function(e) {
+        const char = String.fromCharCode(e.which);
+        if (!/[0-9-]/.test(char)) {
+            e.preventDefault();
+        }
+    });
+}
 
 // Ensure loadStudents is called when DOM is ready (fallback)
 if (document.readyState === 'loading') {

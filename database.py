@@ -6,17 +6,33 @@ Handles user authentication and enrollment data management
 import sqlite3
 import hashlib
 from datetime import datetime
+import time
 
 
 class Database:
     def __init__(self, db_name="enrollment_system.db"):
         self.db_name = db_name
         self.create_tables()
-    
+
     def get_connection(self):
-        conn = sqlite3.connect(self.db_name, timeout=10.0)
-        conn.execute('PRAGMA journal_mode=WAL')
+        """Get database connection with optimized settings for concurrency"""
+        conn = sqlite3.connect(self.db_name, timeout=30.0, check_same_thread=False)
+        conn.execute('PRAGMA journal_mode=WAL')  # Write-Ahead Logging for better concurrency
+        conn.execute('PRAGMA busy_timeout=30000')  # 30 seconds busy timeout
+        conn.execute('PRAGMA synchronous=NORMAL')  # Balance between safety and speed
         return conn
+    
+    def execute_with_retry(self, operation, max_retries=3, retry_delay=0.1):
+        """Execute database operation with automatic retry on lock"""
+        for attempt in range(max_retries):
+            try:
+                return operation()
+            except sqlite3.OperationalError as e:
+                if "locked" in str(e).lower() and attempt < max_retries - 1:
+                    time.sleep(retry_delay * (attempt + 1))  # Exponential backoff
+                    continue
+                raise
+        return None
     
     def create_tables(self):
         conn = self.get_connection()
@@ -118,103 +134,120 @@ class Database:
             return {'success': False, 'message': f'Database error: {str(e)}'}
     
     def create_user(self, username, password, first_name, last_name, middle_name="", email="", role="user"):
-        conn = None
-        try:
-            import re
-            
-            # Validate required fields
-            if not username or not username.strip():
-                return {'success': False, 'message': 'Username is required'}
-            if not password:
-                return {'success': False, 'message': 'Password is required'}
-            if not first_name or not first_name.strip():
-                return {'success': False, 'message': 'First name is required'}
-            if not last_name or not last_name.strip():
-                return {'success': False, 'message': 'Last name is required'}
-            
-            # Validate first name - only letters and spaces allowed
-            if not re.match(r"^[a-zA-Z\s]+$", first_name.strip()):
-                return {'success': False, 'message': 'First name should only contain letters and spaces'}
-            
-            if len(first_name.strip()) < 2 or len(first_name.strip()) > 50:
-                return {'success': False, 'message': 'First name must be between 2 and 50 characters'}
-            
-            # Validate last name - only letters and spaces allowed
-            if not re.match(r"^[a-zA-Z\s]+$", last_name.strip()):
-                return {'success': False, 'message': 'Last name should only contain letters and spaces'}
-            
-            if len(last_name.strip()) < 2 or len(last_name.strip()) > 50:
-                return {'success': False, 'message': 'Last name must be between 2 and 50 characters'}
-            
-            # Validate middle name if provided - only letters and spaces allowed
-            if middle_name and middle_name.strip():
-                if not re.match(r"^[a-zA-Z\s]+$", middle_name.strip()):
-                    return {'success': False, 'message': 'Middle name should only contain letters and spaces'}
+        """Create user with retry mechanism"""
+        def _create_operation():
+            conn = None
+            try:
+                import re
                 
-                if len(middle_name.strip()) > 50:
-                    return {'success': False, 'message': 'Middle name must not exceed 50 characters'}
+                # Validate required fields
+                if not username or not username.strip():
+                    return {'success': False, 'message': 'Username is required'}
+                if not password:
+                    return {'success': False, 'message': 'Password is required'}
+                if not first_name or not first_name.strip():
+                    return {'success': False, 'message': 'First name is required'}
+                if not last_name or not last_name.strip():
+                    return {'success': False, 'message': 'Last name is required'}
+                
+                # Validate first name - only letters and spaces allowed
+                if not re.match(r"^[a-zA-Z\s]+$", first_name.strip()):
+                    return {'success': False, 'message': 'First name should only contain letters and spaces'}
+                
+                if len(first_name.strip()) < 2 or len(first_name.strip()) > 50:
+                    return {'success': False, 'message': 'First name must be between 2 and 50 characters'}
+                
+                # Validate last name - only letters and spaces allowed
+                if not re.match(r"^[a-zA-Z\s]+$", last_name.strip()):
+                    return {'success': False, 'message': 'Last name should only contain letters and spaces'}
+                
+                if len(last_name.strip()) < 2 or len(last_name.strip()) > 50:
+                    return {'success': False, 'message': 'Last name must be between 2 and 50 characters'}
+                
+                # Validate middle name if provided - only letters and spaces allowed
+                if middle_name and middle_name.strip():
+                    if not re.match(r"^[a-zA-Z\s]+$", middle_name.strip()):
+                        return {'success': False, 'message': 'Middle name should only contain letters and spaces'}
+                    
+                    if len(middle_name.strip()) > 50:
+                        return {'success': False, 'message': 'Middle name must not exceed 50 characters'}
+                
+                conn = self.get_connection()
+                cursor = conn.cursor()
+                
+                # Capitalize and standardize names
+                formatted_first_name = ' '.join(word.capitalize() for word in first_name.strip().split())
+                formatted_last_name = ' '.join(word.capitalize() for word in last_name.strip().split())
+                formatted_middle_name = ' '.join(word.capitalize() for word in middle_name.strip().split()) if middle_name else ""
+                
+                # Create full name for display/compatibility
+                if formatted_middle_name:
+                    full_name = f"{formatted_first_name} {formatted_middle_name} {formatted_last_name}"
+                else:
+                    full_name = f"{formatted_first_name} {formatted_last_name}"
+                
+                hashed_password = self.hash_password(password)
+                cursor.execute('''
+                    INSERT INTO users (username, password, first_name, middle_name, last_name, full_name, email, role)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (username.strip(), hashed_password, formatted_first_name, formatted_middle_name, 
+                      formatted_last_name, full_name, email, role))
+                
+                conn.commit()
+                return {'success': True, 'message': 'User created successfully'}
             
-            conn = self.get_connection()
-            cursor = conn.cursor()
-            
-            # Capitalize and standardize names
-            formatted_first_name = ' '.join(word.capitalize() for word in first_name.strip().split())
-            formatted_last_name = ' '.join(word.capitalize() for word in last_name.strip().split())
-            formatted_middle_name = ' '.join(word.capitalize() for word in middle_name.strip().split()) if middle_name else ""
-            
-            # Create full name for display/compatibility
-            if formatted_middle_name:
-                full_name = f"{formatted_first_name} {formatted_middle_name} {formatted_last_name}"
-            else:
-                full_name = f"{formatted_first_name} {formatted_last_name}"
-            
-            hashed_password = self.hash_password(password)
-            cursor.execute('''
-                INSERT INTO users (username, password, first_name, middle_name, last_name, full_name, email, role)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (username.strip(), hashed_password, formatted_first_name, formatted_middle_name, 
-                  formatted_last_name, full_name, email, role))
-            
-            conn.commit()
-            return {'success': True, 'message': 'User created successfully'}
+            except sqlite3.IntegrityError:
+                return {'success': False, 'message': 'Username already exists'}
+            except Exception as e:
+                return {'success': False, 'message': f'Error: {str(e)}'}
+            finally:
+                if conn:
+                    conn.close()
         
-        except sqlite3.IntegrityError:
-            return {'success': False, 'message': 'Username already exists'}
+        try:
+            return self.execute_with_retry(_create_operation)
         except Exception as e:
-            return {'success': False, 'message': f'Error: {str(e)}'}
-        finally:
-            if conn:
-                conn.close()
+            return {'success': False, 'message': f'Database error: {str(e)}'}
     
     def add_student(self, student_data):
-        try:
-            conn = self.get_connection()
-            cursor = conn.cursor()
+        """Add student with retry mechanism"""
+        def _add_operation():
+            conn = None
+            try:
+                conn = self.get_connection()
+                cursor = conn.cursor()
+                
+                cursor.execute('''
+                    INSERT INTO students (student_id, first_name, middle_name, last_name, email, phone, course, department, year_level, status)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    student_data['student_id'],
+                    student_data['first_name'],
+                    student_data.get('middle_name', ''),
+                    student_data['last_name'],
+                    student_data['email'],
+                    student_data['phone'],
+                    student_data['course'],
+                    student_data.get('department', ''),
+                    student_data['year_level'],
+                    student_data.get('status', 'Active')
+                ))
+                
+                conn.commit()
+                return {'success': True, 'message': 'Student added successfully'}
             
-            cursor.execute('''
-                INSERT INTO students (student_id, first_name, middle_name, last_name, email, phone, course, department, year_level, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (
-                student_data['student_id'],
-                student_data['first_name'],
-                student_data.get('middle_name', ''),
-                student_data['last_name'],
-                student_data['email'],
-                student_data['phone'],
-                student_data['course'],
-                student_data.get('department', ''),
-                student_data['year_level'],
-                student_data.get('status', 'Active')
-            ))
-            
-            conn.commit()
-            conn.close()
-            return {'success': True, 'message': 'Student added successfully'}
+            except sqlite3.IntegrityError:
+                return {'success': False, 'message': 'Student ID already exists'}
+            except Exception as e:
+                return {'success': False, 'message': f'Error: {str(e)}'}
+            finally:
+                if conn:
+                    conn.close()
         
-        except sqlite3.IntegrityError:
-            return {'success': False, 'message': 'Student ID already exists'}
+        try:
+            return self.execute_with_retry(_add_operation)
         except Exception as e:
-            return {'success': False, 'message': f'Error: {str(e)}'}
+            return {'success': False, 'message': f'Database error: {str(e)}'}
     
     def get_all_students(self):
         try:
@@ -255,55 +288,75 @@ class Database:
             return []
     
     def update_student(self, student_id, student_data):
-        try:
-            conn = self.get_connection()
-            cursor = conn.cursor()
+        """Update student with retry mechanism"""
+        def _update_operation():
+            conn = None
+            try:
+                conn = self.get_connection()
+                cursor = conn.cursor()
+                
+                cursor.execute('''
+                    UPDATE students 
+                    SET first_name = ?, middle_name = ?, last_name = ?, email = ?, phone = ?, 
+                        course = ?, department = ?, year_level = ?, status = ?
+                    WHERE student_id = ?
+                ''', (
+                    student_data['first_name'],
+                    student_data.get('middle_name', ''),
+                    student_data['last_name'],
+                    student_data['email'],
+                    student_data['phone'],
+                    student_data['course'],
+                    student_data.get('department', ''),
+                    student_data['year_level'],
+                    student_data['status'],
+                    student_id
+                ))
+                
+                conn.commit()
+                affected_rows = cursor.rowcount
+                
+                if affected_rows > 0:
+                    return {'success': True, 'message': 'Student updated successfully'}
+                else:
+                    return {'success': False, 'message': 'Student not found'}
             
-            cursor.execute('''
-                UPDATE students 
-                SET first_name = ?, middle_name = ?, last_name = ?, email = ?, phone = ?, 
-                    course = ?, department = ?, year_level = ?, status = ?
-                WHERE student_id = ?
-            ''', (
-                student_data['first_name'],
-                student_data.get('middle_name', ''),
-                student_data['last_name'],
-                student_data['email'],
-                student_data['phone'],
-                student_data['course'],
-                student_data.get('department', ''),
-                student_data['year_level'],
-                student_data['status'],
-                student_id
-            ))
-            
-            conn.commit()
-            affected_rows = cursor.rowcount
-            conn.close()
-            
-            if affected_rows > 0:
-                return {'success': True, 'message': 'Student updated successfully'}
-            else:
-                return {'success': False, 'message': 'Student not found'}
+            except Exception as e:
+                return {'success': False, 'message': f'Error: {str(e)}'}
+            finally:
+                if conn:
+                    conn.close()
         
+        try:
+            return self.execute_with_retry(_update_operation)
         except Exception as e:
-            return {'success': False, 'message': f'Error: {str(e)}'}
+            return {'success': False, 'message': f'Database error: {str(e)}'}
     
     def delete_student(self, student_id):
-        try:
-            conn = self.get_connection()
-            cursor = conn.cursor()
+        """Delete student with retry mechanism"""
+        def _delete_operation():
+            conn = None
+            try:
+                conn = self.get_connection()
+                cursor = conn.cursor()
+                
+                cursor.execute('DELETE FROM students WHERE student_id = ?', (student_id,))
+                
+                conn.commit()
+                affected_rows = cursor.rowcount
+                
+                if affected_rows > 0:
+                    return {'success': True, 'message': 'Student deleted successfully'}
+                else:
+                    return {'success': False, 'message': 'Student not found'}
             
-            cursor.execute('DELETE FROM students WHERE student_id = ?', (student_id,))
-            
-            conn.commit()
-            affected_rows = cursor.rowcount
-            conn.close()
-            
-            if affected_rows > 0:
-                return {'success': True, 'message': 'Student deleted successfully'}
-            else:
-                return {'success': False, 'message': 'Student not found'}
+            except Exception as e:
+                return {'success': False, 'message': f'Error: {str(e)}'}
+            finally:
+                if conn:
+                    conn.close()
         
+        try:
+            return self.execute_with_retry(_delete_operation)
         except Exception as e:
-            return {'success': False, 'message': f'Error: {str(e)}'}
+            return {'success': False, 'message': f'Database error: {str(e)}'}

@@ -74,16 +74,19 @@ def validate_student_data(data, is_update=False):
     if len(email) > 100:
         return {'valid': False, 'message': 'Email address must not exceed 100 characters'}
     
-    # Phone validation (if provided)
+    # Phone validation (required - Philippine mobile format: 09XX-XXX-XXXX)
     phone = data.get('phone', '').strip()
-    if phone:
-        phone_pattern = r'^[\d\s\-\+\(\)]+$'
-        if not re.match(phone_pattern, phone):
-            return {'valid': False, 'message': 'Phone number should only contain numbers, spaces, hyphens, plus signs, and parentheses'}
-        
-        digits_only = re.sub(r'\D', '', phone)
-        if len(digits_only) < 7 or len(digits_only) > 15:
-            return {'valid': False, 'message': 'Phone number must contain between 7 and 15 digits'}
+    if not phone:
+        return {'valid': False, 'message': 'Phone number is required'}
+    
+    # Validate Philippine mobile format: 09XX-XXX-XXXX
+    phone_pattern = r'^09\d{2}-\d{3}-\d{4}$'
+    if not re.match(phone_pattern, phone):
+        return {'valid': False, 'message': 'Phone number must be in format 09XX-XXX-XXXX (e.g., 0912-345-6789)'}
+    
+    # Ensure it starts with 09 (Philippine mobile)
+    if not phone.startswith('09'):
+        return {'valid': False, 'message': 'Phone number must start with 09 (Philippine mobile format)'}
     
     # Course validation (from dropdown selection)
     course = data.get('course', '').strip()
