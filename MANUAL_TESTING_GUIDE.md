@@ -22,7 +22,7 @@
 **Expected Output:**
 - ✅ Success message: "Account created successfully! Please login."
 - ✅ Redirect to login page
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 1.2: Successful Registration (Admin Role)
@@ -36,7 +36,7 @@
 **Expected Output:**
 - ✅ Success message: "Account created successfully! Please login."
 - ✅ Redirect to login page
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 1.3: Duplicate Username
