@@ -98,10 +98,24 @@ def dashboard():
 @app.route('/api/students', methods=['GET'])
 @login_required
 def get_students():
+    # Get pagination parameters
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 15, type=int)
+    
+    # Ensure valid values
+    page = max(1, page)
+    per_page = min(max(1, per_page), 100)  # Max 100 records per page
+    
     students = db.get_all_students()
+    total_records = len(students)
+    
+    # Calculate pagination
+    start_idx = (page - 1) * per_page
+    end_idx = start_idx + per_page
+    paginated_students = students[start_idx:end_idx]
 
     students_list = []
-    for student in students:
+    for student in paginated_students:
         students_list.append({
             'id': student[0],
             'student_id': student[1],
@@ -117,21 +131,42 @@ def get_students():
             'status': student[9]
         })
     
-    return jsonify({'success': True, 'students': students_list})
+    return jsonify({
+        'success': True,
+        'students': students_list,
+        'pagination': {
+            'page': page,
+            'per_page': per_page,
+            'total': total_records,
+            'total_pages': (total_records + per_page - 1) // per_page
+        }
+    })
 
 
 @app.route('/api/students/search', methods=['GET'])
 @login_required
 def search_students():
     search_term = request.args.get('query', '')
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 15, type=int)
+    
+    # Ensure valid values
+    page = max(1, page)
+    per_page = min(max(1, per_page), 100)
     
     if not search_term:
         return get_students()
     
     students = db.search_student(search_term)
+    total_records = len(students)
+    
+    # Calculate pagination
+    start_idx = (page - 1) * per_page
+    end_idx = start_idx + per_page
+    paginated_students = students[start_idx:end_idx]
     
     students_list = []
-    for student in students:
+    for student in paginated_students:
         students_list.append({
             'id': student[0],
             'student_id': student[1],
@@ -147,7 +182,16 @@ def search_students():
             'status': student[9]
         })
     
-    return jsonify({'success': True, 'students': students_list})
+    return jsonify({
+        'success': True,
+        'students': students_list,
+        'pagination': {
+            'page': page,
+            'per_page': per_page,
+            'total': total_records,
+            'total_pages': (total_records + per_page - 1) // per_page
+        }
+    })
 
 
 @app.route('/api/students/add', methods=['POST'])
