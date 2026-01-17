@@ -16,7 +16,7 @@
             <span class="title">Student Enrollment System</span>
         </div>
         <div class="navbar-user">
-            <span class="welcome-text">Welcome, <strong>{{ user.full_name }}</strong></span>
+            <span class="welcome-text">Welcome, <strong>{{ user.first_name }}</strong></span>
             <span class="role-badge">{{ user.role }}</span>
             <a href="{{ url_for('logout') }}" class="btn btn-logout">Logout</a>
         </div>

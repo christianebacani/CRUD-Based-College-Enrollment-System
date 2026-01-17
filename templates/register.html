@@ -27,9 +27,21 @@
 
             <form method="POST" action="{{ url_for('register') }}" class="login-form">
                 <div class="form-group">
-                    <label for="full_name">Full Name *</label>
-                    <input type="text" id="full_name" name="full_name" class="form-control" 
-                           placeholder="Enter your full name" required autofocus>
+                    <label for="first_name">First Name *</label>
+                    <input type="text" id="first_name" name="first_name" class="form-control" 
+                           placeholder="Enter your first name" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label for="middle_name">Middle Name</label>
+                    <input type="text" id="middle_name" name="middle_name" class="form-control" 
+                           placeholder="Enter your middle name (optional)">
+                </div>
+
+                <div class="form-group">
+                    <label for="last_name">Last Name *</label>
+                    <input type="text" id="last_name" name="last_name" class="form-control" 
+                           placeholder="Enter your last name" required>
                 </div>
 
                 <div class="form-group">
