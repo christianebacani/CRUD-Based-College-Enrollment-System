@@ -34,26 +34,20 @@ function checkAdminRole() {
 }
 
 async function loadStudents() {
-    console.log('loadStudents() called');
     try {
-        console.log('Fetching /api/students...');
         const response = await fetch('/api/students');
-        console.log('Response status:', response.status);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('Data received:', data);
         
         if (data.success) {
             currentStudents = data.students;
-            console.log('Students loaded:', currentStudents.length);
             displayStudents(currentStudents);
             updateRecordCount(currentStudents.length);
         } else {
-            console.error('API returned success=false');
             const tableBody = document.getElementById('studentsTableBody');
             tableBody.innerHTML = '<tr><td colspan="9" class="loading-message">No students found</td></tr>';
             showAlert('Failed to load students', 'error');
@@ -87,8 +81,10 @@ function displayStudents(students) {
         // Format department properly
         const department = student.department || '-';
         
-        // Capitalize status
-        const statusText = capitalizeWords(student.status || 'Unknown');
+        // Capitalize status and handle null/undefined
+        const status = student.status || 'Unknown';
+        const statusText = capitalizeWords(status);
+        const statusClass = status.toLowerCase().replace(/\s+/g, '');
         
         return `
             <tr onclick="selectStudent('${student.student_id}')" data-student-id="${student.student_id}">
@@ -100,7 +96,7 @@ function displayStudents(students) {
                 <td>${student.course}</td>
                 <td>${department}</td>
                 <td>${student.year_level || '-'}</td>
-                <td><span class="status-badge status-${student.status.toLowerCase()}">${statusText}</span></td>
+                <td><span class="status-badge status-${statusClass}">${statusText}</span></td>
             </tr>
         `;
     }).join('');
@@ -511,8 +507,12 @@ function showAlert(message, type) {
     alert.appendChild(closeBtn);
     
     const container = document.querySelector('.container');
-    const firstChild = container.firstChild;
-    container.insertBefore(alert, firstChild);
+    if (container) {
+        const firstChild = container.firstChild;
+        container.insertBefore(alert, firstChild);
+    } else {
+        document.body.insertBefore(alert, document.body.firstChild);
+    }
     
     setTimeout(() => {
         alert.style.opacity = '0';
