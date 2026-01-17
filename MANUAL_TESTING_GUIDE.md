@@ -246,7 +246,7 @@
 **Expected Output:**
 - ❌ Error alert: "Student ID must be in format YY-NNNNN (e.g., 25-00916)"
 - ❌ Student not added
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 3.4: Missing Required Fields
@@ -261,7 +261,7 @@
 **Expected Output:**
 - ❌ Error alert: "Please fill in all required fields"
 - ❌ Student not added
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 3.5: Invalid Email Format
@@ -277,7 +277,7 @@
 **Expected Output:**
 - ❌ Error alert: "Please enter a valid email address"
 - ❌ Student not added
-
+- Still Debugging
 ---
 
 ### Test 3.6: Lowercase Names (Auto-Capitalize)
