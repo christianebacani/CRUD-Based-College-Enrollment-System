@@ -121,7 +121,7 @@
 **Expected Output:**
 - ❌ Error message: "Full Name should only contain letters and spaces"
 - ❌ Stay on registration page
-- Still debugging
+- ✅ (ALREADY TESTED)
 ---
 
 ## 2. LOGIN TESTS (6 tests - 10 min)
