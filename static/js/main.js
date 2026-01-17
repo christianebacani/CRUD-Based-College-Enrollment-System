@@ -92,10 +92,12 @@ function displayStudents(students) {
 }
 
 function selectStudent(studentId) {
+    // Remove selection from all rows
     document.querySelectorAll('.data-table tbody tr').forEach(row => {
         row.classList.remove('selected');
     });
     
+    // Add selection to clicked row
     const selectedRow = document.querySelector(`tr[data-student-id="${studentId}"]`);
     if (selectedRow) {
         selectedRow.classList.add('selected');
@@ -106,6 +108,21 @@ function selectStudent(studentId) {
     if (student) {
         selectedStudentId = studentId;
         populateForm(student);
+        
+        // Ensure form panel is visible for admin users
+        const formPanel = document.getElementById('formPanel');
+        const dashboardContainer = document.querySelector('.dashboard-container');
+        if (formPanel && formPanel.classList.contains('collapsed')) {
+            formPanel.classList.remove('collapsed');
+            dashboardContainer.classList.remove('form-collapsed');
+            localStorage.setItem('formPanelCollapsed', 'false');
+        }
+        
+        // Scroll form to top for better visibility
+        const formPanelBody = formPanel.querySelector('.panel-body');
+        if (formPanelBody) {
+            formPanelBody.scrollTop = 0;
+        }
     }
 }
 
