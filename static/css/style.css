@@ -576,7 +576,7 @@ select.form-control {
     overflow-y: auto;
     overflow-x: hidden;
     position: relative;
-    padding-bottom: 300px; /* Extra space at bottom for consistent dropdown opening */
+    padding-bottom: 30px; /* Reasonable spacing at bottom */
 }
 
 /* Ensure dropdowns have enough space and scroll if needed */
@@ -664,7 +664,7 @@ select.form-control {
 }
 
 .data-table tbody tr {
-    transition: background 0.2s ease;
+    transition: all 0.2s ease;
     cursor: pointer;
 }
 
@@ -674,6 +674,8 @@ select.form-control {
 
 .data-table tbody tr.selected {
     background: #e3f2fd;
+    border-left: 4px solid #667eea;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
 }
 
 .loading-message {
