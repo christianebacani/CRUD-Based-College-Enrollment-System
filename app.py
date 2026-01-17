@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from database import Database
 from validation import validate_student_data, sanitize_student_data
