@@ -740,6 +740,7 @@ select.form-control {
 .data-table td {
     padding: 12px;
     border-bottom: 1px solid #eee;
+    white-space: nowrap; /* Prevent content from wrapping */
 }
 
 .data-table tbody tr {
@@ -770,6 +771,9 @@ select.form-control {
     border-radius: 12px;
     font-size: 12px;
     font-weight: 600;
+    white-space: nowrap; /* Prevent text wrapping */
+    min-width: 100px; /* Consistent minimum width */
+    text-align: center; /* Center text within badge */
 }
 
 /* Enrolled - Green */
@@ -800,7 +804,7 @@ select.form-control {
     border: 1px solid #f1b0b7;
 }
 
-/* Suspended - Orange */
+/* Suspended - Orange/Yellow */
 .status-suspended {
     background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
     color: #856404;
@@ -808,15 +812,24 @@ select.form-control {
 }
 
 /* Transferred Out - Purple */
-.status-transferred {
+.status-transferredout {
     background: linear-gradient(135deg, #e2d9f3 0%, #d4c5f0 100%);
     color: #5a3d8a;
     border: 1px solid #c9b3e8;
 }
 
+/* Unknown/Default Status - Light Gray */
+.status-unknown {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: #495057;
+    border: 1px solid #ced4da;
+}
+
+/* Legacy classes for backward compatibility */
 .status-active {
-    background: #d4edda;
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
     color: #155724;
+    border: 1px solid #b1dfbb;
 }
 
 .status-inactive {
