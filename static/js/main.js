@@ -548,3 +548,11 @@ document.addEventListener('click', function(e) {
         deselectRow();
     }
 });
+
+// Ensure loadStudents is called when DOM is ready (fallback)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadStudents);
+} else {
+    // DOM is already ready, call loadStudents immediately
+    loadStudents();
+}
