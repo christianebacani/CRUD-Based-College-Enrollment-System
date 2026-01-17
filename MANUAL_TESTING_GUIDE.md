@@ -216,7 +216,7 @@
 - ✅ Form clears automatically
 - ✅ Student appears in table below
 - ✅ Record count updates
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 3.2: Duplicate Student ID
@@ -231,7 +231,7 @@
 **Expected Output:**
 - ❌ Error alert: "Student ID already exists"
 - ❌ Student not added to table
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 3.3: Invalid Student ID Format
