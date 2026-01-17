@@ -177,6 +177,22 @@ select.form-control {
     flex: 1;
 }
 
+/* Hide browser's default password reveal button */
+.password-wrapper .form-control::-ms-reveal,
+.password-wrapper .form-control::-ms-clear {
+    display: none;
+}
+
+.password-wrapper .form-control::-webkit-credentials-auto-fill-button,
+.password-wrapper .form-control::-webkit-contacts-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+    height: 0;
+    width: 0;
+    margin: 0;
+}
+
 .toggle-password {
     position: absolute;
     right: 10px;
