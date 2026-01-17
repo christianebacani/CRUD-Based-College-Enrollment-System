@@ -34,20 +34,35 @@ function checkAdminRole() {
 }
 
 async function loadStudents() {
+    console.log('loadStudents() called');
     try {
+        console.log('Fetching /api/students...');
         const response = await fetch('/api/students');
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
+        console.log('Data received:', data);
         
         if (data.success) {
             currentStudents = data.students;
+            console.log('Students loaded:', currentStudents.length);
             displayStudents(currentStudents);
             updateRecordCount(currentStudents.length);
         } else {
+            console.error('API returned success=false');
+            const tableBody = document.getElementById('studentsTableBody');
+            tableBody.innerHTML = '<tr><td colspan="9" class="loading-message">No students found</td></tr>';
             showAlert('Failed to load students', 'error');
         }
     } catch (error) {
         console.error('Error loading students:', error);
-        showAlert('Error loading students', 'error');
+        const tableBody = document.getElementById('studentsTableBody');
+        tableBody.innerHTML = '<tr><td colspan="9" class="loading-message">Error loading students. Please refresh the page.</td></tr>';
+        showAlert('Error loading students: ' + error.message, 'error');
     }
 }
 
@@ -107,60 +122,103 @@ function selectStudent(studentId) {
     
     if (student) {
         selectedStudentId = studentId;
-        populateForm(student);
         
-        // Ensure form panel is visible for admin users
-        const formPanel = document.getElementById('formPanel');
-        const dashboardContainer = document.querySelector('.dashboard-container');
-        if (formPanel && formPanel.classList.contains('collapsed')) {
-            formPanel.classList.remove('collapsed');
-            dashboardContainer.classList.remove('form-collapsed');
-            localStorage.setItem('formPanelCollapsed', 'false');
-        }
-        
-        // Scroll form to top for better visibility
-        const formPanelBody = formPanel.querySelector('.panel-body');
-        if (formPanelBody) {
-            formPanelBody.scrollTop = 0;
+        // Only populate form if form exists (admin role)
+        const studentForm = document.getElementById('studentForm');
+        if (studentForm) {
+            populateForm(student);
+            
+            // Ensure form panel is visible for admin users
+            const formPanel = document.getElementById('formPanel');
+            const dashboardContainer = document.querySelector('.dashboard-container');
+            if (formPanel && formPanel.classList.contains('collapsed')) {
+                formPanel.classList.remove('collapsed');
+                dashboardContainer.classList.remove('form-collapsed');
+                localStorage.setItem('formPanelCollapsed', 'false');
+            }
+            
+            // Scroll form to top for better visibility
+            const formPanelBody = formPanel.querySelector('.panel-body');
+            if (formPanelBody) {
+                formPanelBody.scrollTop = 0;
+            }
         }
     }
 }
 
 function populateForm(student) {
-    document.getElementById('originalStudentId').value = student.student_id;
-    document.getElementById('student_id').value = student.student_id;
-    document.getElementById('first_name').value = student.first_name;
-    document.getElementById('middle_name').value = student.middle_name || '';
-    document.getElementById('last_name').value = student.last_name;
-    document.getElementById('email').value = student.email || '';
-    document.getElementById('phone').value = student.phone || '';
+    const originalStudentId = document.getElementById('originalStudentId');
+    const studentId = document.getElementById('student_id');
+    const firstName = document.getElementById('first_name');
+    const middleName = document.getElementById('middle_name');
+    const lastName = document.getElementById('last_name');
+    const email = document.getElementById('email');
+    const phone = document.getElementById('phone');
+    const department = document.getElementById('department');
+    const course = document.getElementById('course');
+    const yearLevel = document.getElementById('year_level');
+    const status = document.getElementById('status');
+    
+    if (!originalStudentId || !studentId || !firstName) return;
+    
+    originalStudentId.value = student.student_id;
+    studentId.value = student.student_id;
+    firstName.value = student.first_name;
+    if (middleName) middleName.value = student.middle_name || '';
+    if (lastName) lastName.value = student.last_name;
+    if (email) email.value = student.email || '';
+    if (phone) phone.value = student.phone || '';
     
     // Set department first to trigger course population
-    document.getElementById('department').value = student.department || '';
-    
-    // Trigger change event to populate courses
-    const event = new Event('change');
-    document.getElementById('department').dispatchEvent(event);
+    if (department) {
+        department.value = student.department || '';
+        
+        // Trigger change event to populate courses
+        const event = new Event('change');
+        department.dispatchEvent(event);
+    }
     
     // Set course after department courses are populated
-    setTimeout(() => {
-        document.getElementById('course').value = student.course;
-    }, 10);
+    if (course) {
+        setTimeout(() => {
+            course.value = student.course;
+        }, 10);
+    }
     
-    document.getElementById('year_level').value = student.year_level || '';
-    document.getElementById('status').value = student.status;
+    if (yearLevel) yearLevel.value = student.year_level || '';
+    if (status) status.value = student.status;
 }
 
 function clearForm() {
-    document.getElementById('studentForm').reset();
-    document.getElementById('originalStudentId').value = '';
+    const studentForm = document.getElementById('studentForm');
+    if (studentForm) {
+        studentForm.reset();
+        document.getElementById('originalStudentId').value = '';
+        document.getElementById('student_id').focus();
+    }
+    
     selectedStudentId = null;
     
     document.querySelectorAll('.data-table tbody tr').forEach(row => {
         row.classList.remove('selected');
     });
+}
+
+function deselectRow() {
+    document.querySelectorAll('.data-table tbody tr').forEach(row => {
+        row.classList.remove('selected');
+    });
+    selectedStudentId = null;
     
-    document.getElementById('student_id').focus();
+    // Clear form if it exists (admin role)
+    const studentForm = document.getElementById('studentForm');
+    if (studentForm) {
+        studentForm.reset();
+        const originalStudentId = document.getElementById('originalStudentId');
+        if (originalStudentId) {
+            originalStudentId.value = '';
+        }
+    }
 }
 
 function getFormData() {
@@ -474,5 +532,19 @@ document.addEventListener('keydown', function(e) {
     
     if (e.key === 'Escape') {
         clearForm();
+    }
+});
+
+// Deselect row when clicking outside the table
+document.addEventListener('click', function(e) {
+    // Check if click is outside table rows
+    const clickedRow = e.target.closest('.data-table tbody tr');
+    const clickedFormPanel = e.target.closest('.form-panel');
+    const clickedButton = e.target.closest('button');
+    const clickedInput = e.target.closest('input, select, textarea');
+    
+    // If clicked outside table rows and not on form elements, deselect
+    if (!clickedRow && !clickedFormPanel && !clickedButton && !clickedInput && selectedStudentId) {
+        deselectRow();
     }
 });
