@@ -102,7 +102,7 @@
 
                     <div class="form-group">
                         <label for="department">College Department *</label>
-                        <select id="department" class="form-control" required>
+                        <select id="department" class="form-control" required style="white-space: normal; overflow: hidden; text-overflow: ellipsis;">
                             <option value="">Select department</option>
                             <option value="College of Engineering">College of Engineering (COE)</option>
                             <option value="College of Architecture, Fine Arts and Design">College of Architecture, Fine Arts and Design (CAFAD)</option>
@@ -186,7 +186,7 @@
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Course</th>
-                                <th>Department</th>
+                                <th><span class="dept-short">Dept.</span><span class="dept-long">Department</span></th>
                                 <th>Year</th>
                                 <th>Status</th>
                             </tr>
@@ -197,6 +197,11 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                
+                <!-- Pagination Controls -->
+                <div class="pagination-wrapper">
+                    <div class="pagination-container" id="paginationContainer"></div>
                 </div>
             </div>
         </div>
