@@ -135,7 +135,7 @@
 - ✅ Redirect to dashboard
 - ✅ See admin features (student form panel on left)
 - ✅ See navbar with "Welcome, System Administrator"
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 2.2: Successful Login (User)
@@ -147,7 +147,7 @@
 - ✅ Redirect to dashboard
 - ✅ See student list only (no form panel)
 - ✅ See navbar with "Welcome, John Michael Doe"
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 2.3: Wrong Password
@@ -158,7 +158,7 @@
 **Expected Output:**
 - ❌ Error message: "Invalid username or password"
 - ❌ Stay on login page
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 2.4: Nonexistent User
@@ -169,7 +169,7 @@
 **Expected Output:**
 - ❌ Error message: "Invalid username or password"
 - ❌ Stay on login page
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 2.5: Empty Credentials
@@ -180,7 +180,7 @@
 **Expected Output:**
 - ❌ Error message: "Please enter both username and password"
 - ❌ Stay on login page
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 2.6: SQL Injection Attempt
@@ -191,7 +191,7 @@
 **Expected Output:**
 - ❌ Error message: "Invalid username or password"
 - ❌ Stay on login page (no SQL injection)
-
+- ✅ (ALREADY TESTED)
 ---
 
 ## 3. ADD STUDENT TESTS (6 tests - 20 min)
