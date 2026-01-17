@@ -623,6 +623,34 @@ select.form-control {
 
 .search-input {
     background: white;
+    transition: all 0.3s ease;
+}
+
+.search-input.search-active {
+    transform: scale(1.02);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+    border-color: #667eea;
+}
+
+/* Search/Refresh button active state */
+#searchRefreshBtn {
+    transition: all 0.2s ease;
+}
+
+#searchRefreshBtn:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+}
+
+#searchRefreshBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+#searchRefreshBtn.btn-active {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+    background: linear-gradient(135deg, #5568d3 0%, #6941a5 100%);
 }
 
 .record-count {
