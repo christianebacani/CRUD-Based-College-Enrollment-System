@@ -78,6 +78,10 @@ class Database:
     
     def verify_login(self, username, password):
         try:
+            # Validate inputs
+            if not username or not password:
+                return {'success': False, 'message': 'Username and password are required'}
+            
             conn = self.get_connection()
             cursor = conn.cursor()
             
@@ -107,6 +111,14 @@ class Database:
     
     def create_user(self, username, password, full_name, email="", role="user"):
         try:
+            # Validate required fields
+            if not username or not username.strip():
+                return {'success': False, 'message': 'Username is required'}
+            if not password:
+                return {'success': False, 'message': 'Password is required'}
+            if not full_name or not full_name.strip():
+                return {'success': False, 'message': 'Full name is required'}
+            
             conn = self.get_connection()
             cursor = conn.cursor()
             
@@ -114,7 +126,7 @@ class Database:
             cursor.execute('''
                 INSERT INTO users (username, password, full_name, email, role)
                 VALUES (?, ?, ?, ?, ?)
-            ''', (username, hashed_password, full_name, email, role))
+            ''', (username.strip(), hashed_password, full_name.strip(), email, role))
             
             conn.commit()
             conn.close()
