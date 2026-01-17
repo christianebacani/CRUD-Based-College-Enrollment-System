@@ -284,10 +284,19 @@
             }
         }, 5000);
 
-        // Use DOMContentLoaded instead of window.onload for faster loading
-        document.addEventListener('DOMContentLoaded', function() {
+        // Load students when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                loadStudents();
+                setupFormHandlers();
+            });
+        } else {
+            // DOM already loaded
             loadStudents();
-            
+            setupFormHandlers();
+        }
+        
+        function setupFormHandlers() {
             // Prevent form submission on Enter or Tab (only for admin users)
             const studentForm = document.getElementById('studentForm');
             if (studentForm) {
@@ -340,7 +349,7 @@
                     localStorage.setItem('formPanelCollapsed', isCurrentlyCollapsed);
                 });
             }
-        });
+        }
     </script>
 </body>
 </html>
