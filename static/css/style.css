@@ -22,7 +22,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ED1B2F 0%, #C41E3A 100%);
 }
 
 .login-container {
@@ -115,7 +115,7 @@ body {
 }
 
 .login-header h1 {
-    color: #667eea;
+    color: #ED1B2F;
     font-size: 28px;
     font-weight: bold;
     margin-bottom: 8px;
@@ -162,7 +162,7 @@ select.form-control {
 
 .form-control:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #ED1B2F;
     background: white;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
@@ -224,7 +224,7 @@ select.form-control {
 
 .toggle-password.active {
     opacity: 1;
-    color: #667eea;
+    color: #ED1B2F;
 }
 
 .toggle-password:hover svg {
@@ -245,12 +245,12 @@ select.form-control {
 }
 
 .btn-primary {
-    background: #667eea;
+    background: #ED1B2F;
     color: white;
 }
 
 .btn-primary:hover {
-    background: #5568d3;
+    background: #D01828;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
@@ -274,21 +274,25 @@ select.form-control {
 }
 
 .btn-danger {
-    background: #DC3545;
+    background: #495057;
     color: white;
+    border: 1px solid #343A40;
 }
 
 .btn-danger:hover {
-    background: #c82333;
+    background: #343A40;
+    border-color: #23272B;
 }
 
 .btn-secondary {
-    background: #6C757D;
+    background: #17A2B8;
     color: white;
+    border: 1px solid #138496;
 }
 
 .btn-secondary:hover {
-    background: #5a6268;
+    background: #138496;
+    border-color: #117A8B;
 }
 
 .btn-block {
@@ -379,7 +383,7 @@ select.form-control {
 }
 
 .form-footer a {
-    color: #667eea;
+    color: #ED1B2F;
     text-decoration: none;
     font-weight: 600;
 }
@@ -406,7 +410,7 @@ select.form-control {
 }
 
 .navbar {
-    background: #667eea;
+    background: #ED1B2F;
     color: white;
     padding: 15px 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -429,6 +433,19 @@ select.form-control {
     gap: 10px;
     flex-shrink: 1; /* Allow brand to shrink if needed */
     min-width: 0; /* Enable text truncation */
+}
+
+.navbar-brand .navbar-logo {
+    height: 45px;
+    width: auto;
+    margin-right: 12px;
+    object-fit: contain;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand .navbar-logo:hover {
+    transform: scale(1.05);
 }
 
 .navbar-brand .icon {
@@ -506,7 +523,7 @@ select.form-control {
     left: 20px;
     top: 50%;
     transform: translateY(-50%) translateX(-100px);
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ED1B2F 0%, #C41E3A 100%);
     border: none;
     color: white;
     width: 48px;
@@ -532,7 +549,7 @@ select.form-control {
 }
 
 .floating-toggle-btn:hover {
-    background: linear-gradient(135deg, #5568d3 0%, #6941a5 100%);
+    background: linear-gradient(135deg, #D01828 0%, #6941a5 100%);
     transform: translateY(-50%) translateX(0) scale(1.08);
     box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
 }
@@ -588,7 +605,7 @@ select.form-control {
 }
 
 .panel-header {
-    background: #667eea;
+    background: #ED1B2F;
     color: white;
     padding: 20px;
 }
@@ -691,7 +708,7 @@ select.form-control {
 .search-input.search-active {
     transform: scale(1.02);
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
-    border-color: #667eea;
+    border-color: #ED1B2F;
 }
 
 /* Search/Refresh button active state */
@@ -712,7 +729,7 @@ select.form-control {
 #searchRefreshBtn.btn-active {
     transform: scale(1.05);
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
-    background: linear-gradient(135deg, #5568d3 0%, #6941a5 100%);
+    background: linear-gradient(135deg, #D01828 0%, #6941a5 100%);
 }
 
 .record-count {
@@ -809,7 +826,7 @@ select.form-control {
 .data-table thead {
     position: sticky;
     top: 0;
-    background: #667eea;
+    background: #ED1B2F;
     color: white;
     z-index: 10;
 }
@@ -819,7 +836,7 @@ select.form-control {
     text-align: left;
     font-weight: 600;
     font-size: 12px;
-    border-bottom: 2px solid #5568d3;
+    border-bottom: 2px solid #D01828;
     border-right: 1px solid rgba(255, 255, 255, 0.2);
     position: relative;
 }
@@ -953,16 +970,16 @@ body.resizing-column .data-table th.sortable {
 
 .column-resizer:hover {
     background: rgba(102, 126, 234, 0.3);
-    border-right: 2px solid #667eea;
+    border-right: 2px solid #ED1B2F;
 }
 
 .data-table th.resizing {
-    background: #5568d3;
+    background: #D01828;
 }
 
 .data-table th.resizing .column-resizer {
-    background: #667eea;
-    border-right: 2px solid #667eea;
+    background: #ED1B2F;
+    border-right: 2px solid #ED1B2F;
 }
 
 .data-table td {
@@ -995,7 +1012,7 @@ body.resizing-column .data-table th.sortable {
 
 .data-table tbody tr.selected {
     background: #e3f2fd;
-    border-left: 4px solid #667eea;
+    border-left: 4px solid #ED1B2F;
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
 }
 
@@ -1290,13 +1307,13 @@ body.resizing-column .data-table th.sortable {
 }
 
 .page-size-select:hover {
-    border-color: #667eea;
+    border-color: #ED1B2F;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .page-size-select:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #ED1B2F;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
 }
 
@@ -1329,9 +1346,9 @@ body.resizing-column .data-table th.sortable {
 }
 
 .pagination-btn:hover:not(:disabled) {
-    background: #667eea;
+    background: #ED1B2F;
     color: white;
-    border-color: #667eea;
+    border-color: #ED1B2F;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
 }
@@ -1342,9 +1359,9 @@ body.resizing-column .data-table th.sortable {
 }
 
 .pagination-btn.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ED1B2F 0%, #C41E3A 100%);
     color: white;
-    border-color: #667eea;
+    border-color: #ED1B2F;
     font-weight: 600;
     box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
     cursor: default;
@@ -1370,14 +1387,14 @@ body.resizing-column .data-table th.sortable {
 .pagination-info {
     padding: 8px 16px;
     margin-left: 8px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #ED1B2F 0%, #C41E3A 100%);
     color: white;
     border-radius: 20px;
     font-size: 13px;
     font-weight: 600;
     white-space: nowrap;
     box-shadow: 0 3px 8px rgba(102, 126, 234, 0.3);
-    border: 2px solid #667eea;
+    border: 2px solid #ED1B2F;
     letter-spacing: 0.3px;
 }
 
@@ -1406,3 +1423,4 @@ body.resizing-column .data-table th.sortable {
         font-size: 13px;
     }
 }
+
