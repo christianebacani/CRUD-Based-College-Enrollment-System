@@ -414,36 +414,47 @@ select.form-control {
 
 .navbar .container {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start; /* Keep everything aligned to the left */
     align-items: center;
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 20px;
+    flex-wrap: nowrap; /* Prevent wrapping */
+    gap: 20px; /* Space between brand and user sections */
 }
 
 .navbar-brand {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-shrink: 1; /* Allow brand to shrink if needed */
+    min-width: 0; /* Enable text truncation */
 }
 
 .navbar-brand .icon {
     font-size: 28px;
+    flex-shrink: 0; /* Icon never shrinks */
 }
 
 .navbar-brand .title {
     font-size: 20px;
     font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .navbar-user {
     display: flex;
     align-items: center;
     gap: 15px;
+    flex-shrink: 0; /* Prevent user section from shrinking */
+    flex-wrap: nowrap; /* Keep all elements in one line */
 }
 
 .welcome-text {
     font-size: 14px;
+    white-space: nowrap; /* Prevent text wrapping */
 }
 
 .role-badge {
@@ -452,6 +463,8 @@ select.form-control {
     border-radius: 12px;
     font-size: 12px;
     text-transform: uppercase;
+    white-space: nowrap; /* Prevent badge text wrapping */
+    flex-shrink: 0; /* Badge never shrinks */
 }
 
 .dashboard-container {
@@ -828,13 +841,74 @@ select.form-control {
     .table-panel {
         order: 1;
     }
+
+    /* Ensure navbar stays left-aligned */
+    .navbar .container {
+        justify-content: flex-start;
+    }
+
+    /* Improve navbar spacing at medium screens */
+    .navbar-brand .title {
+        font-size: 18px;
+    }
+
+    .navbar-user {
+        gap: 10px;
+    }
+
+    .welcome-text {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 900px) {
+    /* Optimize navbar for half-screen width */
+    .navbar .container {
+        padding: 0 15px;
+        gap: 10px; /* Add gap between left and right sections */
+        justify-content: flex-start; /* Force left alignment */
+    }
+
+    .navbar-brand .title {
+        font-size: 16px;
+        max-width: 200px; /* Limit title width to protect right side */
+    }
+
+    .navbar-brand .icon {
+        font-size: 24px;
+    }
+
+    .navbar-user {
+        gap: 10px; /* Reduce gap between right elements */
+    }
+
+    .welcome-text {
+        font-size: 12px;
+    }
+
+    .role-badge {
+        font-size: 11px;
+        padding: 3px 10px;
+    }
+
+    .btn-logout {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
 }
 
 @media (max-width: 768px) {
+    /* Keep navbar horizontal and left-aligned */
+    .navbar .container {
+        justify-content: flex-start;
+        flex-wrap: nowrap;
+    }
+
     .navbar-user {
-        flex-direction: column;
-        align-items: flex-end;
+        flex-direction: row; /* Keep horizontal */
+        align-items: center;
         gap: 8px;
+        flex-wrap: nowrap;
     }
 
     .form-row {
@@ -848,6 +922,61 @@ select.form-control {
 
     .record-count {
         text-align: center;
+    }
+}
+
+@media (max-width: 600px) {
+    /* Compact navbar for small screens */
+    .navbar .container {
+        justify-content: flex-start;
+    }
+
+    .navbar-brand .title {
+        display: none;
+    }
+
+    .navbar-brand .icon {
+        font-size: 28px;
+    }
+
+    .welcome-text {
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .navbar .container {
+        padding: 0 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Ultra-compact for very small screens */
+    .navbar {
+        padding: 10px 0;
+    }
+
+    .navbar .container {
+        justify-content: flex-start;
+    }
+
+    .navbar-user {
+        gap: 6px;
+        flex-direction: row;
+    }
+
+    .role-badge {
+        font-size: 10px;
+        padding: 2px 8px;
+    }
+
+    .btn-logout {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+
+    .welcome-text strong {
+        display: inline;
     }
 }
 
