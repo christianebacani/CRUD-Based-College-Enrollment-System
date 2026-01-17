@@ -91,12 +91,12 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="phone">Phone</label>
+                        <label for="phone">Phone *</label>
                         <input type="tel" id="phone" class="form-control" 
-                               placeholder="+1234567890 or (123) 456-7890" 
-                               pattern="[\d\s\-\+\(\)]+" 
-                               title="Enter a valid phone number" 
-                               maxlength="20">
+                               placeholder="09XX-XXX-XXXX (e.g., 0912-345-6789)" 
+                               pattern="09\d{2}-\d{3}-\d{4}" 
+                               title="Phone format: 09XX-XXX-XXXX (e.g., 0912-345-6789)" 
+                               maxlength="13" required>
                     </div>
 
                     <div class="form-group">
