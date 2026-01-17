@@ -5,6 +5,8 @@ let pageSize = 15;
 let totalRecords = 0;
 let totalPages = 0;
 let currentSearchTerm = '';
+let currentSortColumn = null;
+let currentSortDirection = 'asc';
 
 // Helper function to capitalize words properly
 function capitalizeWords(str) {
@@ -71,6 +73,12 @@ async function loadStudents() {
         const url = new URL('/api/students', window.location.origin);
         url.searchParams.append('page', currentPage);
         url.searchParams.append('per_page', pageSize);
+        
+        // Add sort parameters if set
+        if (currentSortColumn) {
+            url.searchParams.append('sort_column', currentSortColumn);
+            url.searchParams.append('sort_direction', currentSortDirection);
+        }
         
         const response = await fetch(url);
         
@@ -142,6 +150,8 @@ function displayStudents(students) {
             </tr>
         `;
     }).join('');
+    
+    updateSortIndicators();
 }
 
 function selectStudent(studentId) {
@@ -646,6 +656,7 @@ function initResizableColumns() {
                 
                 // Add resizing class for visual feedback
                 th.classList.add('resizing');
+                document.body.classList.add('resizing-column');
                 document.body.style.cursor = 'col-resize';
                 document.body.style.userSelect = 'none';
             });
@@ -684,6 +695,7 @@ function initResizableColumns() {
         if (currentTh) {
             currentTh.classList.remove('resizing');
         }
+        document.body.classList.remove('resizing-column');
         document.body.style.cursor = '';
         document.body.style.userSelect = '';
         document.removeEventListener('mousemove', handleMouseMove);
@@ -828,5 +840,42 @@ function changePageSize(newSize) {
         searchStudents();
     } else {
         loadStudents();
+    }
+}
+
+// ==================== SORTING FUNCTIONS ====================
+
+function sortTable(column) {
+    // Toggle direction if same column, otherwise start with ascending
+    if (currentSortColumn === column) {
+        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSortColumn = column;
+        currentSortDirection = 'asc';
+    }
+    
+    // Reset to first page when sorting
+    currentPage = 1;
+    
+    // Reload data from server with sort parameters
+    if (currentSearchTerm) {
+        searchStudents();
+    } else {
+        loadStudents();
+    }
+}
+
+function updateSortIndicators() {
+    // Remove all active classes
+    document.querySelectorAll('.data-table th').forEach(th => {
+        th.classList.remove('sort-asc', 'sort-desc');
+    });
+    
+    // Add active class to current sorted column
+    if (currentSortColumn) {
+        const th = document.querySelector(`th[data-column="${currentSortColumn}"]`);
+        if (th) {
+            th.classList.add(`sort-${currentSortDirection}`);
+        }
     }
 }
