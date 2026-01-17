@@ -5,9 +5,11 @@
 2. Open browser: `http://localhost:5001`
 3. Clear browser cache before testing (Ctrl+Shift+Delete)
 
+**🔴 CRITICAL TESTS ONLY - Estimated Time: 90 Minutes (25 Must-Test Cases)**
+
 ---
 
-## 1. REGISTRATION TESTS
+## 1. REGISTRATION TESTS (8 tests - 15 min)
 
 ### Test 1.1: Successful Registration (User Role)
 **Input:**
@@ -93,7 +95,36 @@
 
 ---
 
-## 2. LOGIN TESTS
+### Test 1.7: Lowercase Name (Auto-Capitalize Check)
+**Input:**
+- Full Name: `juan dela cruz` (all lowercase)
+- Email: `test@example.com`
+- Username: `testuser7`
+- Password: `Pass123!`
+- Role: `user`
+
+**Expected Output:**
+- ✅ Success: "Account created successfully!"
+- ✅ Name auto-capitalizes to "Juan Dela Cruz"
+- ✅ Redirect to login page
+
+---
+
+### Test 1.8: Invalid Characters in Name
+**Input:**
+- Full Name: `John Doe 123` (contains numbers)
+- Email: `test8@example.com`
+- Username: `testuser8`
+- Password: `Pass123!`
+- Role: `user`
+
+**Expected Output:**
+- ❌ Error message: "Full Name should only contain letters and spaces"
+- ❌ Stay on registration page
+
+---
+
+## 2. LOGIN TESTS (6 tests - 10 min)
 
 ### Test 2.1: Successful Login (Admin)
 **Input:**
@@ -163,7 +194,7 @@
 
 ---
 
-## 3. ADD STUDENT TESTS (Admin Only)
+## 3. ADD STUDENT TESTS (6 tests - 20 min)
 
 ### Test 3.1: Successful Add Student
 **Login as:** `admin` / `admin123`
@@ -249,85 +280,26 @@
 
 ---
 
-### Test 3.6: Numbers in Name
+### Test 3.6: Lowercase Names (Auto-Capitalize)
 **Login as:** `admin` / `admin123`
 
 **Input:**
-- Student ID: `26-99999`
-- First Name: `John123` (contains numbers)
-- Last Name: `Doe`
-- (Fill other required fields)
-
-**Expected Output:**
-- ❌ Error alert: "First Name should only contain letters, spaces, hyphens, and apostrophes"
-- ❌ Student not added
-
----
-
-### Test 3.7: Valid Special Characters in Name
-**Login as:** `admin` / `admin123`
-
-**Input:**
-- Student ID: `26-54321`
-- First Name: `Mary-Jane`
-- Middle Name: ``
-- Last Name: `O'Connor`
-- (Fill other required fields with valid data)
-
-**Expected Output:**
-- ✅ Success alert: "Student added successfully!"
-- ✅ Student added with hyphen and apostrophe in name
-
----
-
-### Test 3.8: Name Too Long (>50 characters)
-**Login as:** `admin` / `admin123`
-
-**Input:**
-- Student ID: `26-99999`
-- First Name: `Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa` (51 characters)
-- Last Name: `Doe`
-- (Fill other required fields)
-
-**Expected Output:**
-- ❌ Error alert: "First Name must be between 2 and 50 characters"
-- ❌ Student not added
-
----
-
-### Test 3.9: Empty Middle Name (Should Work)
-**Login as:** `admin` / `admin123`
-
-**Input:**
-- Student ID: `26-88888`
-- First Name: `Pedro`
-- Middle Name: `` (empty - this is optional)
-- Last Name: `Reyes`
+- Student ID: `26-11111`
+- First Name: `maria` (all lowercase)
+- Middle Name: `clara`
+- Last Name: `santos`
+- Email: `maria.santos@example.com`
+- Phone: `09123456789`
 - (Fill other required fields)
 
 **Expected Output:**
 - ✅ Success alert: "Student added successfully!"
-- ✅ Student added with blank middle name
+- ✅ Name auto-capitalizes: "Maria Clara Santos" in table
+- ✅ Student appears with proper capitalization
 
 ---
 
-### Test 3.10: Invalid Phone Format
-**Login as:** `admin` / `admin123`
-
-**Input:**
-- Student ID: `26-77777`
-- First Name: `Juan`
-- Last Name: `Dela Cruz`
-- Phone: `abc123xyz` (letters in phone)
-- (Fill other required fields)
-
-**Expected Output:**
-- ❌ Error alert: "Phone number should only contain numbers, spaces, hyphens, plus signs, and parentheses"
-- ❌ Student not added
-
----
-
-## 4. UPDATE STUDENT TESTS (Admin Only)
+## 4. UPDATE STUDENT TESTS (3 tests - 10 min)
 
 ### Test 4.1: Successful Update
 **Login as:** `admin` / `admin123`
@@ -359,21 +331,23 @@
 
 ---
 
-### Test 4.3: Update to Invalid Email
+### Test 4.3: Update Name with Wrong Capitalization
 **Login as:** `admin` / `admin123`
 
 **Steps:**
-1. Click on a student row
-2. Change Email to `invalid-email`
-3. Click "Update Student"
+1. Click on any student row
+2. Change First Name to `ana` (lowercase)
+3. Change Last Name to `garcia`
+4. Click "Update Student"
 
 **Expected Output:**
-- ❌ Error alert: "Please enter a valid email address"
-- ❌ Student not updated
+- ✅ Success alert: "Student updated successfully!"
+- ✅ Name auto-capitalizes: "Ana Garcia" in table
+- ✅ Form clears and row deselects
 
 ---
 
-## 5. DELETE STUDENT TESTS (Admin Only)
+## 5. DELETE STUDENT TESTS (2 tests - 5 min)
 
 ### Test 5.1: Successful Delete
 **Login as:** `admin` / `admin123`
@@ -392,22 +366,7 @@
 
 ---
 
-### Test 5.2: Cancel Delete
-**Login as:** `admin` / `admin123`
-
-**Steps:**
-1. Click on a student row
-2. Click "Delete Student"
-3. Click "Cancel" in confirmation dialog
-
-**Expected Output:**
-- ✅ Deletion cancelled
-- ✅ Student remains in table
-- ✅ No changes made
-
----
-
-### Test 5.3: Delete Without Selection
+### Test 5.2: Delete Without Selection
 **Login as:** `admin` / `admin123`
 
 **Steps:**
@@ -419,7 +378,7 @@
 
 ---
 
-## 6. CLEAR FORM TEST (Admin Only)
+## 6. CLEAR FORM TEST (1 test - 3 min)
 
 ### Test 6.1: Clear Form
 **Login as:** `admin` / `admin123`
@@ -435,76 +394,9 @@
 
 ---
 
-### Test 6.2: Clear Form Using Escape Key
-**Login as:** `admin` / `admin123`
+## 7. SEARCH FUNCTIONALITY (3 tests - 7 min)
 
-**Steps:**
-1. Click on a student row
-2. Press `Esc` key
-
-**Expected Output:**
-- ✅ Form clears
-- ✅ Row deselects
-
----
-
-## 7. ROW SELECTION TESTS (Both Roles)
-
-### Test 7.1: Select Row (Admin)
-**Login as:** `admin` / `admin123`
-
-**Steps:**
-1. Click on any student row in table
-
-**Expected Output:**
-- ✅ Row highlights with blue background and left border
-- ✅ Form populates with student data
-- ✅ Form panel opens if collapsed
-
----
-
-### Test 7.2: Select Row (User)
-**Login as:** `johndoe` / `Pass123!`
-
-**Steps:**
-1. Click on any student row in table
-
-**Expected Output:**
-- ✅ Row highlights with blue background and left border
-- ✅ No form panel (users can't edit)
-
----
-
-### Test 7.3: Deselect by Clicking Outside
-**Login as:** Any role
-
-**Steps:**
-1. Click on a student row
-2. Click outside the table (navbar, panel header, empty space)
-
-**Expected Output:**
-- ✅ Row highlight removes
-- ✅ Form clears (if admin)
-
----
-
-### Test 7.4: Don't Deselect When Clicking Form
-**Login as:** `admin` / `admin123`
-
-**Steps:**
-1. Click on a student row
-2. Click inside the form fields
-
-**Expected Output:**
-- ✅ Row stays highlighted
-- ✅ Form remains populated
-- ✅ Can edit form fields
-
----
-
-## 8. SEARCH FUNCTIONALITY (Both Roles)
-
-### Test 8.1: Search by Student ID
+### Test 7.1: Search by Student ID
 **Login as:** Any role
 
 **Steps:**
@@ -518,7 +410,7 @@
 
 ---
 
-### Test 8.2: Search by Name
+### Test 7.2: Search by Name
 **Login as:** Any role
 
 **Steps:**
@@ -532,36 +424,23 @@
 
 ---
 
-### Test 8.3: Search by Course
+### Test 7.3: Case-Insensitive Search
 **Login as:** Any role
 
 **Steps:**
-1. Type `computer science` in search box
-2. Click Search button
+1. Type `MARIA` in search box (all uppercase)
+2. Press Enter
 
 **Expected Output:**
-- ✅ All CS students appear
-- ✅ Button shows visual feedback when clicked
+- ✅ Finds "Maria" (case-insensitive)
+- ✅ All matching students display
+- ✅ Search works regardless of case
 
 ---
 
-### Test 8.4: Clear Search
-**Login as:** Any role
+## 8. ACCESS CONTROL TESTS (3 tests - 10 min)
 
-**Steps:**
-1. Perform a search
-2. Clear the search box
-3. Press Enter or click Search
-
-**Expected Output:**
-- ✅ All students display again
-- ✅ Record count shows total
-
----
-
-## 9. ACCESS CONTROL TESTS
-
-### Test 9.1: User Cannot Add Student
+### Test 8.1: User Cannot Add Student
 **Login as:** `johndoe` / `Pass123!`
 
 **Expected Output:**
@@ -571,7 +450,7 @@
 
 ---
 
-### Test 9.2: User Cannot Update Student
+### Test 8.2: User Cannot Update Student
 **Login as:** `johndoe` / `Pass123!`
 
 **Steps:**
@@ -583,7 +462,7 @@
 
 ---
 
-### Test 9.3: User Cannot Delete Student
+### Test 8.3: User Cannot Delete Student
 **Login as:** `johndoe` / `Pass123!`
 
 **Expected Output:**
@@ -593,9 +472,9 @@
 
 ---
 
-## 10. EDGE CASES
+## 9. CRITICAL EDGE CASES (3 tests - 10 min)
 
-### Test 10.1: XSS Prevention
+### Test 9.1: XSS Prevention (Script Tags)
 **Login as:** `admin` / `admin123`
 
 **Input:**
@@ -611,98 +490,109 @@
 
 ---
 
-### Test 10.2: Very Long Input
+### Test 9.2: SQL Injection Prevention
 **Login as:** `admin` / `admin123`
 
 **Input:**
-- Email: `verylongemailaddress@verylongdomainname.com` (>100 chars)
+- Student ID: `26-00'; DROP TABLE students; --`
+- First Name: `Test`
+- Last Name: `User`
+- (Fill other fields)
 
 **Expected Output:**
-- ❌ Error or input truncated
-- ❌ Proper validation
+- ❌ Error: Invalid Student ID format
+- ❌ No SQL execution
+- ❌ Database safe
 
 ---
 
-### Test 10.3: Special Status Values
+### Test 9.3: Duplicate Prevention System Check
 **Login as:** `admin` / `admin123`
 
 **Steps:**
-1. Add student with each status:
-   - Enrolled (green badge)
-   - Unenrolled (gray badge)
-   - Graduated (blue badge)
-   - Dropped (red badge)
-   - Suspended (orange badge)
-   - Transferred Out (purple badge)
+1. Add student with ID `26-99999`
+2. Try to add another student with same ID `26-99999`
 
 **Expected Output:**
-- ✅ Each status displays with correct color badge
-- ✅ Proper styling and formatting
+- ❌ Error: "Student ID already exists"
+- ❌ Second student not added
+- ❌ First student data preserved
 
 ---
 
-## 11. LOGOUT TEST
+## Summary
 
-### Test 11.1: Successful Logout
-**Login as:** Any role
-
-**Steps:**
-1. Click "Logout" button in navbar
-
-**Expected Output:**
-- ✅ Redirect to login page
-- ✅ Info message: "You have been logged out successfully"
-- ✅ Cannot access dashboard without login
-
----
-
-## 12. FORM PANEL COLLAPSE (Admin Only)
-
-### Test 12.1: Collapse/Expand Form Panel
-**Login as:** `admin` / `admin123`
-
-**Steps:**
-1. Hover over left edge of screen
-2. Click the toggle button that appears
-
-**Expected Output:**
-- ✅ Form panel collapses/expands
-- ✅ Table takes full width when collapsed
-- ✅ State persists on page refresh
+### Test Count by Section
+| Section | Tests | Time |
+|---------|-------|------|
+| Registration | 8 | 15 min |
+| Login | 6 | 10 min |
+| Add Student | 6 | 20 min |
+| Update Student | 3 | 10 min |
+| Delete Student | 2 | 5 min |
+| Clear Form | 1 | 3 min |
+| Search | 3 | 7 min |
+| Access Control | 3 | 10 min |
+| Edge Cases | 3 | 10 min |
+| **TOTAL** | **25** | **~90 min** |
 
 ---
 
-## Summary Checklist
+## Quick Testing Sequence
 
-**Registration:** 6 tests
-**Login:** 6 tests
-**Add Student:** 10 tests
-**Update Student:** 3 tests
-**Delete Student:** 3 tests
-**Clear Form:** 2 tests
-**Row Selection:** 4 tests
-**Search:** 4 tests
-**Access Control:** 3 tests
-**Edge Cases:** 3 tests
-**Logout:** 1 test
-**Form Panel:** 1 test
+### Phase 1: Authentication (25 min)
+1. Test all registration scenarios
+2. Test all login scenarios
+3. Verify both admin and user roles work
 
-**TOTAL: 46 Manual Test Cases**
+### Phase 2: Core CRUD (35 min)
+1. Add students with valid data
+2. Test validation errors (duplicates, formats, missing fields)
+3. Update student records
+4. Delete student records
+5. Clear form functionality
+
+### Phase 3: Search & Access (20 min)
+1. Test search by ID, name, case-insensitive
+2. Verify user role cannot modify data
+3. Confirm admin has full access
+
+### Phase 4: Security (10 min)
+1. XSS prevention test
+2. SQL injection prevention test
+3. Duplicate ID prevention
+
+---
+
+## Critical Success Criteria
+
+✅ **Must Work:**
+- User and admin registration/login
+- Add student with all validations
+- Update and delete students
+- Search functionality (case-insensitive)
+- Role-based access control (admin vs user)
+- Auto-capitalization of names
+- Duplicate prevention
+- Security validations (XSS, SQL injection)
+
+❌ **Must Not Happen:**
+- SQL injection succeeds
+- XSS scripts execute
+- Duplicate student IDs created
+- Users can modify data
+- Invalid emails/formats accepted
+- Empty required fields accepted
 
 ---
 
 ## Notes for Testers
 
 1. Always test with **fresh browser session** (clear cache)
-2. Test in **different browsers** (Chrome, Firefox, Edge)
-3. Check **console for errors** (F12 Developer Tools)
-4. Verify **database persistence** (data survives server restart)
-5. Test **keyboard shortcuts**:
-   - `Ctrl+S`: Save/Update student
-   - `Esc`: Clear form
-   - `Enter`: Search
-6. Check **responsive design** on mobile screen sizes
-7. Verify **proper capitalization** in displayed names
-8. Ensure **status badges** have correct colors
-9. Test **concurrent users** (admin and user logged in separately)
-10. Verify **data validation** on both client and server side
+2. Check **console for errors** (F12 Developer Tools)
+3. Verify **data persists** after page refresh
+4. Test **keyboard shortcuts**: `Ctrl+S` to save, `Esc` to clear
+5. Ensure **proper capitalization** in displayed names
+6. Verify **status badges** have correct colors (Enrolled=green, etc.)
+7. Check **record counts** update correctly
+8. Test in **different browsers** if time permits
