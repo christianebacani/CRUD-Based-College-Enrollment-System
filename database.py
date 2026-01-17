@@ -14,7 +14,9 @@ class Database:
         self.create_tables()
     
     def get_connection(self):
-        return sqlite3.connect(self.db_name)
+        conn = sqlite3.connect(self.db_name, timeout=10.0)
+        conn.execute('PRAGMA journal_mode=WAL')
+        return conn
     
     def create_tables(self):
         conn = self.get_connection()
@@ -110,6 +112,7 @@ class Database:
             return {'success': False, 'message': f'Database error: {str(e)}'}
     
     def create_user(self, username, password, full_name, email="", role="user"):
+        conn = None
         try:
             # Validate required fields
             if not username or not username.strip():
@@ -122,20 +125,25 @@ class Database:
             conn = self.get_connection()
             cursor = conn.cursor()
             
+            # Capitalize and standardize full name (e.g., "john doe" -> "John Doe")
+            formatted_full_name = ' '.join(word.capitalize() for word in full_name.strip().split())
+            
             hashed_password = self.hash_password(password)
             cursor.execute('''
                 INSERT INTO users (username, password, full_name, email, role)
                 VALUES (?, ?, ?, ?, ?)
-            ''', (username.strip(), hashed_password, full_name.strip(), email, role))
+            ''', (username.strip(), hashed_password, formatted_full_name, email, role))
             
             conn.commit()
-            conn.close()
             return {'success': True, 'message': 'User created successfully'}
         
         except sqlite3.IntegrityError:
             return {'success': False, 'message': 'Username already exists'}
         except Exception as e:
             return {'success': False, 'message': f'Error: {str(e)}'}
+        finally:
+            if conn:
+                conn.close()
     
     def add_student(self, student_data):
         try:
