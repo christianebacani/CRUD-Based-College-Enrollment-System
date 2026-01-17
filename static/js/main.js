@@ -1,5 +1,10 @@
 let currentStudents = [];
 let selectedStudentId = null;
+let currentPage = 1;
+let pageSize = 15;
+let totalRecords = 0;
+let totalPages = 0;
+let currentSearchTerm = '';
 
 // Helper function to capitalize words properly
 function capitalizeWords(str) {
@@ -17,6 +22,12 @@ function formatPhoneNumber(phone) {
     if (cleaned.length === 12 && cleaned.startsWith('63')) {
         const localNumber = '0' + cleaned.slice(2); // Convert 639XX to 09XX
         return `${localNumber.slice(0, 4)}-${localNumber.slice(4, 7)}-${localNumber.slice(7)}`;
+    }
+    
+    // Handle +123456789 or 123456789 format (9 digits) - prepend '09' prefix
+    if (cleaned.length === 9) {
+        const fullNumber = '09' + cleaned;
+        return `${fullNumber.slice(0, 4)}-${fullNumber.slice(4, 7)}-${fullNumber.slice(7)}`;
     }
     
     // Format as 09XX-XXX-XXXX for 11 digits starting with 09
@@ -57,7 +68,11 @@ function checkAdminRole() {
 
 async function loadStudents() {
     try {
-        const response = await fetch('/api/students');
+        const url = new URL('/api/students', window.location.origin);
+        url.searchParams.append('page', currentPage);
+        url.searchParams.append('per_page', pageSize);
+        
+        const response = await fetch(url);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -67,8 +82,13 @@ async function loadStudents() {
         
         if (data.success) {
             currentStudents = data.students;
+            totalRecords = data.pagination.total;
+            totalPages = data.pagination.total_pages;
+            currentPage = data.pagination.page;
+            
             displayStudents(currentStudents);
-            updateRecordCount(currentStudents.length);
+            updateRecordCount(totalRecords);
+            renderPagination();
         } else {
             const tableBody = document.getElementById('studentsTableBody');
             tableBody.innerHTML = '<tr><td colspan="9" class="loading-message">No students found</td></tr>';
@@ -710,4 +730,103 @@ function initResizableColumns() {
     
     // Load saved widths on init
     loadColumnWidths();
+}
+
+// ==================== PAGINATION FUNCTIONS ====================
+
+function renderPagination() {
+    const paginationContainer = document.getElementById('paginationContainer');
+    if (!paginationContainer) return;
+    
+    if (totalPages <= 1) {
+        paginationContainer.style.display = 'none';
+        return;
+    }
+    
+    paginationContainer.style.display = 'flex';
+    
+    let paginationHTML = `
+        <button class="pagination-btn" onclick="changePage(1)" ${currentPage === 1 ? 'disabled' : ''} title="First Page">
+            ⏮ First
+        </button>
+        <button class="pagination-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} title="Previous Page">
+            ◀ Prev
+        </button>
+    `;
+    
+    // Page numbers with smart ellipsis
+    const maxVisible = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+    
+    // Adjust start if we're near the end
+    if (endPage - startPage < maxVisible - 1) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
+    }
+    
+    // Show first page + ellipsis if needed
+    if (startPage > 1) {
+        paginationHTML += `<button class="pagination-btn" onclick="changePage(1)">1</button>`;
+        if (startPage > 2) {
+            paginationHTML += `<span class="pagination-ellipsis">...</span>`;
+        }
+    }
+    
+    // Show page numbers
+    for (let i = startPage; i <= endPage; i++) {
+        paginationHTML += `
+            <button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+                ${i}
+            </button>
+        `;
+    }
+    
+    // Show ellipsis + last page if needed
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            paginationHTML += `<span class="pagination-ellipsis">...</span>`;
+        }
+        paginationHTML += `<button class="pagination-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
+    }
+    
+    paginationHTML += `
+        <button class="pagination-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} title="Next Page">
+            Next ▶
+        </button>
+        <button class="pagination-btn" onclick="changePage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''} title="Last Page">
+            Last ⏭
+        </button>
+        <span class="pagination-info">Page ${currentPage} of ${totalPages}</span>
+    `;
+    
+    paginationContainer.innerHTML = paginationHTML;
+}
+
+function changePage(page) {
+    if (page < 1 || page > totalPages || page === currentPage) return;
+    
+    currentPage = page;
+    
+    if (currentSearchTerm) {
+        searchStudents();
+    } else {
+        loadStudents();
+    }
+    
+    // Scroll to top of table
+    const tableContainer = document.querySelector('.table-container');
+    if (tableContainer) {
+        tableContainer.scrollTop = 0;
+    }
+}
+
+function changePageSize(newSize) {
+    pageSize = parseInt(newSize);
+    currentPage = 1; // Reset to first page
+    
+    if (currentSearchTerm) {
+        searchStudents();
+    } else {
+        loadStudents();
+    }
 }
