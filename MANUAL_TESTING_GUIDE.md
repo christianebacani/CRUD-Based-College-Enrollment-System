@@ -50,7 +50,7 @@
 **Expected Output:**
 - ❌ Error message: "Username already exists"
 - ❌ Stay on registration page
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 1.4: Empty Username
@@ -64,7 +64,7 @@
 **Expected Output:**
 - ❌ Error message: "Please fill in all required fields"
 - ❌ Stay on registration page
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 1.5: Empty Password
@@ -78,7 +78,7 @@
 **Expected Output:**
 - ❌ Error message: "Please fill in all required fields"
 - ❌ Stay on registration page
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 1.6: Empty Full Name
@@ -92,7 +92,7 @@
 **Expected Output:**
 - ❌ Error message: "Please fill in all required fields"
 - ❌ Stay on registration page
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 1.7: Lowercase Name (Auto-Capitalize Check)
@@ -107,7 +107,7 @@
 - ✅ Success: "Account created successfully!"
 - ✅ Name auto-capitalizes to "Juan Dela Cruz"
 - ✅ Redirect to login page
-
+- ✅ (ALREADY TESTED)
 ---
 
 ### Test 1.8: Invalid Characters in Name
@@ -121,7 +121,7 @@
 **Expected Output:**
 - ❌ Error message: "Full Name should only contain letters and spaces"
 - ❌ Stay on registration page
-
+- Still debugging
 ---
 
 ## 2. LOGIN TESTS (6 tests - 10 min)
