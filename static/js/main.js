@@ -458,11 +458,6 @@ async function searchStudents() {
                 currentStudents = data.students;
                 displayStudents(currentStudents);
                 updateRecordCount(currentStudents.length, true);
-                
-                // Change button to Refresh
-                const btn = document.getElementById('searchRefreshBtn');
-                btn.innerHTML = '🔄 Refresh';
-                btn.setAttribute('data-mode', 'refresh');
             }
         } catch (error) {
             console.error('Error searching students:', error);
@@ -472,21 +467,7 @@ async function searchStudents() {
 }
 
 function handleSearchOrRefresh() {
-    const btn = document.getElementById('searchRefreshBtn');
-    const mode = btn.getAttribute('data-mode');
-    
-    if (mode === 'refresh') {
-        // Reset to default view
-        document.getElementById('searchInput').value = '';
-        loadStudents();
-        
-        // Change button back to Search
-        btn.innerHTML = '🔍 Search';
-        btn.setAttribute('data-mode', 'search');
-    } else {
-        // Perform search
-        searchStudents();
-    }
+    searchStudents();
 }
 
 function updateRecordCount(count, isSearch = false) {
