@@ -582,6 +582,9 @@ select.form-control {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 120px); /* Fit to viewport */
 }
 
 .panel-header {
@@ -628,6 +631,14 @@ select.form-control {
     overflow-x: hidden;
     position: relative;
     padding-bottom: 30px; /* Reasonable spacing at bottom */
+}
+
+.table-panel .panel-body {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 320px);
+    overflow: hidden;
 }
 
 /* Ensure dropdowns have enough space and scroll if needed */
@@ -711,15 +722,64 @@ select.form-control {
 }
 
 .table-container {
+    flex: 1;
     overflow-x: auto;
-    max-height: calc(100vh - 300px);
     overflow-y: auto;
+    min-height: 0;
 }
 
 .data-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 14px;
+    font-size: 13px;
+    border: 1px solid #ddd;
+    table-layout: fixed;
+}
+
+/* Column width optimization for all 9 columns */
+.data-table th:nth-child(1), /* ID */
+.data-table td:nth-child(1) {
+    width: 4%;
+}
+
+.data-table th:nth-child(2), /* Student ID */
+.data-table td:nth-child(2) {
+    width: 9%;
+}
+
+.data-table th:nth-child(3), /* Name */
+.data-table td:nth-child(3) {
+    width: 18%;
+}
+
+.data-table th:nth-child(4), /* Email */
+.data-table td:nth-child(4) {
+    width: 17%;
+}
+
+.data-table th:nth-child(5), /* Phone */
+.data-table td:nth-child(5) {
+    width: 11%;
+}
+
+.data-table th:nth-child(6), /* Course */
+.data-table td:nth-child(6) {
+    width: 18%;
+}
+
+.data-table th:nth-child(7), /* Dept */
+.data-table td:nth-child(7) {
+    width: 7%;
+}
+
+.data-table th:nth-child(8), /* Year */
+.data-table td:nth-child(8) {
+    width: 8%;
+}
+
+.data-table th:nth-child(9), /* Status */
+.data-table td:nth-child(9) {
+    width: 8%;
 }
 
 .data-table thead {
@@ -731,16 +791,29 @@ select.form-control {
 }
 
 .data-table th {
-    padding: 12px;
+    padding: 10px 8px;
     text-align: left;
     font-weight: 600;
+    font-size: 13px;
     border-bottom: 2px solid #5568d3;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.data-table th:last-child {
+    border-right: none;
 }
 
 .data-table td {
-    padding: 12px;
+    padding: 10px 8px;
     border-bottom: 1px solid #eee;
-    white-space: nowrap; /* Prevent content from wrapping */
+    border-right: 1px solid #eee;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.data-table td:last-child {
+    border-right: none;
 }
 
 .data-table tbody tr {
@@ -766,63 +839,63 @@ select.form-control {
 }
 
 .status-badge {
-    display: inline-block;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap; /* Prevent text wrapping */
-    min-width: 100px; /* Consistent minimum width */
-    text-align: center; /* Center text within badge */
+    display: inline-block !important;
+    padding: 4px 10px !important;
+    border-radius: 12px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    min-width: 100px !important;
+    text-align: center !important;
 }
 
 /* Enrolled - Green */
 .status-enrolled {
-    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-    color: #155724;
-    border: 1px solid #b1dfbb;
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
+    color: #155724 !important;
+    border: 1px solid #b1dfbb !important;
 }
 
 /* Unenrolled - Gray */
 .status-unenrolled {
-    background: linear-gradient(135deg, #e2e3e5 0%, #d6d8db 100%);
-    color: #383d41;
-    border: 1px solid #c6c8ca;
+    background: linear-gradient(135deg, #e2e3e5 0%, #d6d8db 100%) !important;
+    color: #383d41 !important;
+    border: 1px solid #c6c8ca !important;
 }
 
 /* Graduated - Blue */
 .status-graduated {
-    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
-    color: #0c5460;
-    border: 1px solid #abdde5;
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%) !important;
+    color: #0c5460 !important;
+    border: 1px solid #abdde5 !important;
 }
 
 /* Dropped - Red */
 .status-dropped {
-    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-    color: #721c24;
-    border: 1px solid #f1b0b7;
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%) !important;
+    color: #721c24 !important;
+    border: 1px solid #f1b0b7 !important;
 }
 
 /* Suspended - Orange/Yellow */
 .status-suspended {
-    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-    color: #856404;
-    border: 1px solid #ffd97d;
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%) !important;
+    color: #856404 !important;
+    border: 1px solid #ffd97d !important;
 }
 
 /* Transferred Out - Purple */
 .status-transferredout {
-    background: linear-gradient(135deg, #e2d9f3 0%, #d4c5f0 100%);
-    color: #5a3d8a;
-    border: 1px solid #c9b3e8;
+    background: linear-gradient(135deg, #e2d9f3 0%, #d4c5f0 100%) !important;
+    color: #5a3d8a !important;
+    border: 1px solid #c9b3e8 !important;
 }
 
 /* Unknown/Default Status - Light Gray */
 .status-unknown {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    color: #495057;
-    border: 1px solid #ced4da;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    color: #495057 !important;
+    border: 1px solid #ced4da !important;
 }
 
 /* Legacy classes for backward compatibility */
