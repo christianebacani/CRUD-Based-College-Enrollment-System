@@ -180,15 +180,29 @@
                     <table class="data-table" id="studentsTable">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Student ID</th>
-                                <th>Name</th>
+                                <th class="sortable" data-column="id" onclick="sortTable('id')">
+                                    ID <span class="sort-arrow"></span>
+                                </th>
+                                <th class="sortable" data-column="student_id" onclick="sortTable('student_id')">
+                                    Student ID <span class="sort-arrow"></span>
+                                </th>
+                                <th class="sortable" data-column="name" onclick="sortTable('name')">
+                                    Name <span class="sort-arrow"></span>
+                                </th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th>Course</th>
-                                <th><span class="dept-short">Dept.</span><span class="dept-long">Department</span></th>
-                                <th>Year</th>
-                                <th>Status</th>
+                                <th class="sortable" data-column="course" onclick="sortTable('course')">
+                                    Course <span class="sort-arrow"></span>
+                                </th>
+                                <th class="sortable" data-column="department" onclick="sortTable('department')">
+                                    <span class="dept-short">Dept.</span><span class="dept-long">Department</span> <span class="sort-arrow"></span>
+                                </th>
+                                <th class="sortable" data-column="year_level" onclick="sortTable('year_level')">
+                                    Year <span class="sort-arrow"></span>
+                                </th>
+                                <th class="sortable" data-column="status" onclick="sortTable('status')">
+                                    Status <span class="sort-arrow"></span>
+                                </th>
                             </tr>
                         </thead>
                         <tbody id="studentsTableBody">
