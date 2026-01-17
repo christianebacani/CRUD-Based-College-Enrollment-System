@@ -703,45 +703,6 @@ function initResizableColumns() {
         currentResizer = null;
         currentTh = null;
     }
-    
-    // Save column widths to localStorage
-    function saveColumnWidths() {
-        const widths = {};
-        ths.forEach((th, index) => {
-            widths[index] = th.style.width || '';
-        });
-        localStorage.setItem('tableColumnWidths', JSON.stringify(widths));
-    }
-    
-    // Load saved column widths from localStorage
-    function loadColumnWidths() {
-        const savedWidths = localStorage.getItem('tableColumnWidths');
-        if (savedWidths) {
-            try {
-                const widths = JSON.parse(savedWidths);
-                ths.forEach((th, index) => {
-                    if (widths[index]) {
-                        th.style.width = widths[index];
-                        
-                        // Apply to corresponding td cells
-                        const columnIndex = index + 1;
-                        const rows = table.querySelectorAll('tbody tr');
-                        rows.forEach(row => {
-                            const cell = row.querySelector(`td:nth-child(${columnIndex})`);
-                            if (cell) {
-                                cell.style.width = widths[index];
-                            }
-                        });
-                    }
-                });
-            } catch (e) {
-                console.error('Error loading column widths:', e);
-            }
-        }
-    }
-    
-    // Load saved widths on init
-    loadColumnWidths();
 }
 
 // ==================== PAGINATION FUNCTIONS ====================
