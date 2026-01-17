@@ -821,6 +821,73 @@ select.form-control {
     font-size: 12px;
     border-bottom: 2px solid #5568d3;
     border-right: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+}
+
+/* Sortable column styling - professional, no background hover */
+.data-table th.sortable {
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    padding-right: 22px;
+}
+
+/* Subtle underline on hover - professional indicator */
+body:not(.resizing-column) .data-table th.sortable:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* NO background changes during resize */
+body.resizing-column .data-table th {
+    cursor: col-resize !important;
+    transition: none !important;
+}
+
+body.resizing-column .data-table th.sortable {
+    cursor: col-resize !important;
+    transition: none !important;
+}
+
+/* Sort arrow - ONLY show when actively sorted */
+.data-table th .sort-arrow {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    font-size: 10px;
+    display: none;
+}
+
+.data-table th .sort-arrow::before {
+    content: '⇅';
+    color: white;
+}
+
+/* Don't show arrow on hover - only when actively sorted */
+
+/* Active sort - ascending */
+.data-table th.sort-asc .sort-arrow {
+    opacity: 1;
+    display: inline;
+    transform: translateY(-50%) scale(1.2);
+}
+
+.data-table th.sort-asc .sort-arrow::before {
+    content: '▲';
+}
+
+/* Active sort - descending */
+.data-table th.sort-desc .sort-arrow {
+    opacity: 1;
+    display: inline;
+    transform: translateY(-50%) scale(1.2);
+}
+
+.data-table th.sort-desc .sort-arrow::before {
+    content: '▼';
 }
 
 /* Dynamic Department column header - show short/long based on form state */
