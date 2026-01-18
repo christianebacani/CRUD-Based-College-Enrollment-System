@@ -41,7 +41,6 @@ def login():
             session['username'] = result['username']
             session['role'] = result['role']
             
-            # Special case: default admin account shows full name in welcome message
             if result['username'] == 'admin':
                 session['first_name'] = result.get('full_name', 'System Administrator')
             else:
@@ -98,22 +97,18 @@ def dashboard():
 @app.route('/api/students', methods=['GET'])
 @login_required
 def get_students():
-    # Get pagination parameters
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 15, type=int)
     
-    # Get sort parameters
     sort_column = request.args.get('sort_column', 'id')
     sort_direction = request.args.get('sort_direction', 'asc')
     
-    # Ensure valid values
     page = max(1, page)
-    per_page = min(max(1, per_page), 100)  # Max 100 records per page
+    per_page = min(max(1, per_page), 100)
     
     students = db.get_all_students(sort_column=sort_column, sort_direction=sort_direction)
     total_records = len(students)
     
-    # Calculate pagination
     start_idx = (page - 1) * per_page
     end_idx = start_idx + per_page
     paginated_students = students[start_idx:end_idx]
@@ -154,11 +149,9 @@ def search_students():
     page = request.args.get('page', 1, type=int)
     per_page = request.args.get('per_page', 15, type=int)
     
-    # Get sort parameters
     sort_column = request.args.get('sort_column', 'id')
     sort_direction = request.args.get('sort_direction', 'asc')
     
-    # Ensure valid values
     page = max(1, page)
     per_page = min(max(1, per_page), 100)
     
@@ -168,7 +161,6 @@ def search_students():
     students = db.search_student(search_term, sort_column=sort_column, sort_direction=sort_direction)
     total_records = len(students)
     
-    # Calculate pagination
     start_idx = (page - 1) * per_page
     end_idx = start_idx + per_page
     paginated_students = students[start_idx:end_idx]
@@ -210,12 +202,10 @@ def add_student():
     
     data = request.get_json()
 
-    # Validate data
     validation_result = validate_student_data(data, is_update=False)
     if not validation_result['valid']:
         return jsonify({'success': False, 'message': validation_result['message']})
     
-    # Sanitize data
     student_data = sanitize_student_data({
         'student_id': data['student_id'],
         'first_name': data['first_name'],
@@ -241,12 +231,10 @@ def update_student(student_id):
     
     data = request.get_json()
 
-    # Validate data
     validation_result = validate_student_data(data, is_update=True)
     if not validation_result['valid']:
         return jsonify({'success': False, 'message': validation_result['message']})
     
-    # Sanitize data
     student_data = sanitize_student_data({
         'first_name': data['first_name'],
         'middle_name': data.get('middle_name', ''),

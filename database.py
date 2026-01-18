@@ -1,8 +1,3 @@
-"""
-Database Module for Enrollment CRUD System
-Handles user authentication and enrollment data management
-"""
-
 import sqlite3
 import hashlib
 from datetime import datetime
@@ -15,21 +10,19 @@ class Database:
         self.create_tables()
 
     def get_connection(self):
-        """Get database connection with optimized settings for concurrency"""
         conn = sqlite3.connect(self.db_name, timeout=30.0, check_same_thread=False)
-        conn.execute('PRAGMA journal_mode=WAL')  # Write-Ahead Logging for better concurrency
-        conn.execute('PRAGMA busy_timeout=30000')  # 30 seconds busy timeout
-        conn.execute('PRAGMA synchronous=NORMAL')  # Balance between safety and speed
+        conn.execute('PRAGMA journal_mode=WAL')
+        conn.execute('PRAGMA busy_timeout=30000')
+        conn.execute('PRAGMA synchronous=NORMAL')
         return conn
     
     def execute_with_retry(self, operation, max_retries=3, retry_delay=0.1):
-        """Execute database operation with automatic retry on lock"""
         for attempt in range(max_retries):
             try:
                 return operation()
             except sqlite3.OperationalError as e:
                 if "locked" in str(e).lower() and attempt < max_retries - 1:
-                    time.sleep(retry_delay * (attempt + 1))  # Exponential backoff
+                    time.sleep(retry_delay * (attempt + 1))
                     continue
                 raise
         return None
@@ -99,7 +92,6 @@ class Database:
     
     def verify_login(self, username, password):
         try:
-            # Validate inputs
             if not username or not password:
                 return {'success': False, 'message': 'Username and password are required'}
             
@@ -134,13 +126,11 @@ class Database:
             return {'success': False, 'message': f'Database error: {str(e)}'}
     
     def create_user(self, username, password, first_name, last_name, middle_name="", email="", role="user"):
-        """Create user with retry mechanism"""
         def _create_operation():
             conn = None
             try:
                 import re
                 
-                # Validate required fields
                 if not username or not username.strip():
                     return {'success': False, 'message': 'Username is required'}
                 if not password:
@@ -150,21 +140,18 @@ class Database:
                 if not last_name or not last_name.strip():
                     return {'success': False, 'message': 'Last name is required'}
                 
-                # Validate first name - only letters and spaces allowed
                 if not re.match(r"^[a-zA-Z\s]+$", first_name.strip()):
                     return {'success': False, 'message': 'First name should only contain letters and spaces'}
                 
                 if len(first_name.strip()) < 2 or len(first_name.strip()) > 50:
                     return {'success': False, 'message': 'First name must be between 2 and 50 characters'}
                 
-                # Validate last name - only letters and spaces allowed
                 if not re.match(r"^[a-zA-Z\s]+$", last_name.strip()):
                     return {'success': False, 'message': 'Last name should only contain letters and spaces'}
                 
                 if len(last_name.strip()) < 2 or len(last_name.strip()) > 50:
                     return {'success': False, 'message': 'Last name must be between 2 and 50 characters'}
                 
-                # Validate middle name if provided - only letters and spaces allowed
                 if middle_name and middle_name.strip():
                     if not re.match(r"^[a-zA-Z\s]+$", middle_name.strip()):
                         return {'success': False, 'message': 'Middle name should only contain letters and spaces'}
@@ -175,12 +162,10 @@ class Database:
                 conn = self.get_connection()
                 cursor = conn.cursor()
                 
-                # Capitalize and standardize names
                 formatted_first_name = ' '.join(word.capitalize() for word in first_name.strip().split())
                 formatted_last_name = ' '.join(word.capitalize() for word in last_name.strip().split())
                 formatted_middle_name = ' '.join(word.capitalize() for word in middle_name.strip().split()) if middle_name else ""
                 
-                # Create full name for display/compatibility
                 if formatted_middle_name:
                     full_name = f"{formatted_first_name} {formatted_middle_name} {formatted_last_name}"
                 else:
@@ -210,7 +195,6 @@ class Database:
             return {'success': False, 'message': f'Database error: {str(e)}'}
     
     def add_student(self, student_data):
-        """Add student with retry mechanism"""
         def _add_operation():
             conn = None
             try:
@@ -254,10 +238,8 @@ class Database:
             conn = self.get_connection()
             cursor = conn.cursor()
             
-            # Validate direction
             direction = 'ASC' if sort_direction.lower() == 'asc' else 'DESC'
             
-            # Validate sort column to prevent SQL injection
             valid_columns = {
                 'id': f'id {direction}',
                 'student_id': f'student_id {direction}',
@@ -268,10 +250,8 @@ class Database:
                 'status': f'status {direction}'
             }
             
-            # Default to id if invalid column
             order_by = valid_columns.get(sort_column, f'id {direction}')
             
-            # Build query with ORDER BY
             query = f'SELECT * FROM students ORDER BY {order_by}'
             cursor.execute(query)
             students = cursor.fetchall()
@@ -288,10 +268,8 @@ class Database:
             conn = self.get_connection()
             cursor = conn.cursor()
             
-            # Validate direction
             direction = 'ASC' if sort_direction.lower() == 'asc' else 'DESC'
             
-            # Validate sort column to prevent SQL injection
             valid_columns = {
                 'id': f'id {direction}',
                 'student_id': f'student_id {direction}',
@@ -302,12 +280,10 @@ class Database:
                 'status': f'status {direction}'
             }
             
-            # Default to id if invalid column
             order_by = valid_columns.get(sort_column, f'id {direction}')
             
             search_pattern = f"%{search_term}%"
             
-            # Handle department acronym searches
             department_search = search_term.upper()
             dept_mapping = {
                 'CICS': 'College of Informatics and Computing Sciences',
@@ -316,11 +292,9 @@ class Database:
                 'CET': 'College of Engineering Technology'
             }
             
-            # If search term matches an acronym, also search for full name
             dept_full_name = dept_mapping.get(department_search, None)
             
             if dept_full_name:
-                # Search includes the full department name
                 query = f'''
                     SELECT * FROM students 
                     WHERE CAST(id AS TEXT) LIKE ?
@@ -342,7 +316,6 @@ class Database:
                                        search_pattern, search_pattern, search_pattern, search_pattern,
                                        search_pattern, dept_full_name, search_pattern, search_pattern))
             else:
-                # Normal search
                 query = f'''
                     SELECT * FROM students 
                     WHERE CAST(id AS TEXT) LIKE ?
@@ -372,7 +345,6 @@ class Database:
             return []
     
     def update_student(self, student_id, student_data):
-        """Update student with retry mechanism"""
         def _update_operation():
             conn = None
             try:
@@ -417,7 +389,6 @@ class Database:
             return {'success': False, 'message': f'Database error: {str(e)}'}
     
     def delete_student(self, student_id):
-        """Delete student with retry mechanism"""
         def _delete_operation():
             conn = None
             try:
