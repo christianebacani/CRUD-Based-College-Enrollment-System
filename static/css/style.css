@@ -148,7 +148,6 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Force select dropdowns to open consistently downward */
 select.form-control {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -177,7 +176,6 @@ select.form-control {
     flex: 1;
 }
 
-/* Hide browser's default password reveal button */
 .password-wrapper .form-control::-ms-reveal,
 .password-wrapper .form-control::-ms-clear {
     display: none;
@@ -425,21 +423,21 @@ select.form-control {
 
 .navbar .container {
     display: flex;
-    justify-content: flex-start; /* Keep everything aligned to the left */
+    justify-content: flex-start;
     align-items: center;
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 20px;
-    flex-wrap: nowrap; /* Prevent wrapping */
-    gap: 20px; /* Space between brand and user sections */
+    flex-wrap: nowrap;
+    gap: 20px;
 }
 
 .navbar-brand {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-shrink: 1; /* Allow brand to shrink if needed */
-    min-width: 0; /* Enable text truncation */
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 .navbar-brand .navbar-logo {
@@ -457,7 +455,7 @@ select.form-control {
 
 .navbar-brand .icon {
     font-size: 28px;
-    flex-shrink: 0; /* Icon never shrinks */
+    flex-shrink: 0;
 }
 
 .navbar-brand .title {
@@ -472,13 +470,13 @@ select.form-control {
     display: flex;
     align-items: center;
     gap: 15px;
-    flex-shrink: 0; /* Prevent user section from shrinking */
-    flex-wrap: nowrap; /* Keep all elements in one line */
+    flex-shrink: 0;
+    flex-wrap: nowrap;
 }
 
 .welcome-text {
     font-size: 14px;
-    white-space: nowrap; /* Prevent text wrapping */
+    white-space: nowrap;
 }
 
 .role-badge {
@@ -487,13 +485,12 @@ select.form-control {
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
-    white-space: nowrap; /* Prevent badge text wrapping */
-    flex-shrink: 0; /* Badge never shrinks */
+    white-space: nowrap;
+    flex-shrink: 0;
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* ADMIN badge - Gold/Amber for authority and importance */
 .role-badge-admin {
     background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
     color: #1a1a1a;
@@ -505,7 +502,6 @@ select.form-control {
     box-shadow: 0 4px 8px rgba(255, 165, 0, 0.3);
 }
 
-/* USER badge - Modern blue for standard access and clear distinction */
 .role-badge-user {
     background: linear-gradient(135deg, #60A5FA 0%, #3B82F6 100%);
     color: white;
@@ -527,18 +523,15 @@ select.form-control {
     position: relative;
 }
 
-/* Collapsed form state - table takes full width */
 .dashboard-container.form-collapsed {
     grid-template-columns: 0fr 1fr;
     gap: 0;
 }
 
-/* Full width table when form is hidden (for regular users) */
 .dashboard-container:has(.table-panel):not(:has(.form-panel)) {
     grid-template-columns: 1fr;
 }
 
-/* Hover zone on left edge to reveal toggle button */
 .dashboard-container::before {
     content: '';
     position: fixed;
@@ -550,7 +543,6 @@ select.form-control {
     pointer-events: none;
 }
 
-/* Floating toggle button (hidden by default) */
 .floating-toggle-btn {
     position: fixed;
     left: 20px;
@@ -573,7 +565,6 @@ select.form-control {
     pointer-events: none;
 }
 
-/* Show button when hovering left edge or button itself */
 .floating-toggle-btn.visible,
 .floating-toggle-btn:hover {
     transform: translateY(-50%) translateX(0);
@@ -587,7 +578,6 @@ select.form-control {
     box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
 }
 
-/* CSS Chevron Icon */
 .toggle-icon {
     position: relative;
     width: 12px;
@@ -608,16 +598,14 @@ select.form-control {
     transition: transform 0.3s ease;
 }
 
-/* Update chevron direction based on form state */
 .dashboard-container.form-collapsed .floating-toggle-btn .toggle-icon::before {
-    transform: rotate(-45deg); /* Point right */
+    transform: rotate(-45deg);
 }
 
 .dashboard-container:not(.form-collapsed) .floating-toggle-btn .toggle-icon::before {
-    transform: rotate(135deg); /* Point left */
+    transform: rotate(135deg);
 }
 
-/* Left edge hover zone */
 .hover-zone-left {
     position: fixed;
     left: 0;
@@ -634,7 +622,7 @@ select.form-control {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 120px); /* Fit to viewport */
+    max-height: calc(100vh - 120px);
 }
 
 .panel-header {
@@ -649,7 +637,6 @@ select.form-control {
     margin: 0;
 }
 
-/* Collapsed form panel */
 .form-panel {
     transition: all 0.3s ease;
     overflow: hidden;
@@ -680,7 +667,7 @@ select.form-control {
     overflow-y: auto;
     overflow-x: hidden;
     position: relative;
-    padding-bottom: 30px; /* Reasonable spacing at bottom */
+    padding-bottom: 30px;
 }
 
 .table-panel .panel-body {
@@ -691,7 +678,6 @@ select.form-control {
     overflow: hidden;
 }
 
-/* Ensure dropdowns have enough space and scroll if needed */
 .form-group {
     margin-bottom: 20px;
     position: relative;
@@ -702,7 +688,6 @@ select.form-control {
     z-index: 10;
 }
 
-/* Ensure select elements open downward consistently */
 select.form-control {
     position: relative;
 }
@@ -744,7 +729,6 @@ select.form-control {
     border-color: #ED1B2F;
 }
 
-/* Search/Refresh button active state */
 #searchRefreshBtn {
     transition: all 0.2s ease;
 }
@@ -787,70 +771,67 @@ select.form-control {
     table-layout: fixed;
 }
 
-/* Column width optimization for all 9 columns */
-.data-table th:nth-child(1), /* ID */
+.data-table th:nth-child(1),
 .data-table td:nth-child(1) {
     width: 40px;
     min-width: 40px;
 }
 
-.data-table th:nth-child(2), /* Student ID */
+.data-table th:nth-child(2),
 .data-table td:nth-child(2) {
     width: 90px;
     min-width: 90px;
 }
 
-.data-table th:nth-child(3), /* Name */
+.data-table th:nth-child(3),
 .data-table td:nth-child(3) {
     width: 160px;
     min-width: 140px;
 }
 
-.data-table th:nth-child(4), /* Email */
+.data-table th:nth-child(4),
 .data-table td:nth-child(4) {
     width: 170px;
     min-width: 150px;
 }
 
-.data-table th:nth-child(5), /* Phone */
+.data-table th:nth-child(5),
 .data-table td:nth-child(5) {
     width: 110px;
     min-width: 110px;
 }
 
-.data-table th:nth-child(6), /* Course */
+.data-table th:nth-child(6),
 .data-table td:nth-child(6) {
     width: 200px;
     min-width: 180px;
 }
 
-.data-table th:nth-child(7), /* Dept./Department (dynamic) */
+.data-table th:nth-child(7),
 .data-table td:nth-child(7) {
     width: 60px;
     min-width: 55px;
 }
 
-/* Wider when showing full 'Department' text */
 .dashboard-container.form-collapsed .data-table th:nth-child(7),
 .dashboard-container.form-collapsed .data-table td:nth-child(7) {
     width: 95px;
     min-width: 90px;
 }
 
-/* For regular users, always use wider width */
 .dashboard-container:not(:has(.form-panel)) .data-table th:nth-child(7),
 .dashboard-container:not(:has(.form-panel)) .data-table td:nth-child(7) {
     width: 95px;
     min-width: 90px;
 }
 
-.data-table th:nth-child(8), /* Year */
+.data-table th:nth-child(8),
 .data-table td:nth-child(8) {
     width: 70px;
     min-width: 70px;
 }
 
-.data-table th:nth-child(9), /* Status */
+.data-table th:nth-child(9),
 .data-table td:nth-child(9) {
     width: 140px;
     min-width: 130px;
@@ -874,7 +855,6 @@ select.form-control {
     position: relative;
 }
 
-/* Sortable column styling - professional, no background hover */
 .data-table th.sortable {
     cursor: pointer;
     -webkit-user-select: none;
@@ -882,13 +862,11 @@ select.form-control {
     padding-right: 22px;
 }
 
-/* Subtle underline on hover - professional indicator */
 body:not(.resizing-column) .data-table th.sortable:hover {
     text-decoration: underline;
     text-underline-offset: 3px;
 }
 
-/* NO background changes during resize */
 body.resizing-column .data-table th {
     cursor: col-resize !important;
     transition: none !important;
@@ -899,7 +877,6 @@ body.resizing-column .data-table th.sortable {
     transition: none !important;
 }
 
-/* Sort arrow - ONLY show when actively sorted */
 .data-table th .sort-arrow {
     position: absolute;
     right: 6px;
@@ -916,9 +893,6 @@ body.resizing-column .data-table th.sortable {
     color: white;
 }
 
-/* Don't show arrow on hover - only when actively sorted */
-
-/* Active sort - ascending */
 .data-table th.sort-asc .sort-arrow {
     opacity: 1;
     display: inline;
@@ -929,7 +903,6 @@ body.resizing-column .data-table th.sortable {
     content: '▲';
 }
 
-/* Active sort - descending */
 .data-table th.sort-desc .sort-arrow {
     opacity: 1;
     display: inline;
@@ -940,16 +913,14 @@ body.resizing-column .data-table th.sortable {
     content: '▼';
 }
 
-/* Dynamic Department column header - show short/long based on form state */
 .data-table th:nth-child(7) .dept-short {
-    display: inline; /* Show 'Dept.' by default when form is visible */
+    display: inline;
 }
 
 .data-table th:nth-child(7) .dept-long {
-    display: none; /* Hide 'Department' by default */
+    display: none;
 }
 
-/* When form is collapsed (full width table), show full 'Department' text */
 .dashboard-container.form-collapsed .data-table th:nth-child(7) .dept-short {
     display: none;
 }
@@ -958,7 +929,6 @@ body.resizing-column .data-table th.sortable {
     display: inline;
 }
 
-/* For regular users (no form panel), always show full 'Department' */
 .dashboard-container:not(:has(.form-panel)) .data-table th:nth-child(7) .dept-short {
     display: none;
 }
@@ -967,20 +937,17 @@ body.resizing-column .data-table th.sortable {
     display: inline;
 }
 
-/* Left-align Dept./Department column (consistent with other text columns) */
 .data-table th:nth-child(7) {
     text-align: left;
     padding-left: 8px;
     padding-right: 6px;
 }
 
-/* Left-align Dept./Department column data cells */
 .data-table td:nth-child(7) {
     text-align: left;
     padding-left: 8px;
 }
 
-/* Center-align status column header */
 .data-table th:nth-child(9) {
     text-align: center;
 }
@@ -989,7 +956,6 @@ body.resizing-column .data-table th.sortable {
     border-right: none;
 }
 
-/* Resizable column handles (Excel-like) */
 .column-resizer {
     position: absolute;
     top: 0;
@@ -1024,7 +990,6 @@ body.resizing-column .data-table th.sortable {
     white-space: nowrap;
 }
 
-/* Allow status badges to display fully without truncation */
 .data-table td:nth-child(9) {
     overflow: visible;
     text-align: center;
@@ -1067,56 +1032,48 @@ body.resizing-column .data-table th.sortable {
     text-align: center !important;
 }
 
-/* Enrolled - Green */
 .status-enrolled {
     background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
     color: #155724 !important;
     border: 1px solid #b1dfbb !important;
 }
 
-/* Unenrolled - Gray */
 .status-unenrolled {
     background: linear-gradient(135deg, #e2e3e5 0%, #d6d8db 100%) !important;
     color: #383d41 !important;
     border: 1px solid #c6c8ca !important;
 }
 
-/* Graduated - Blue */
 .status-graduated {
     background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%) !important;
     color: #0c5460 !important;
     border: 1px solid #abdde5 !important;
 }
 
-/* Dropped - Red */
 .status-dropped {
     background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%) !important;
     color: #721c24 !important;
     border: 1px solid #f1b0b7 !important;
 }
 
-/* Suspended - Orange/Yellow */
 .status-suspended {
     background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%) !important;
     color: #856404 !important;
     border: 1px solid #ffd97d !important;
 }
 
-/* Transferred Out - Purple */
 .status-transferredout {
     background: linear-gradient(135deg, #e2d9f3 0%, #d4c5f0 100%) !important;
     color: #5a3d8a !important;
     border: 1px solid #c9b3e8 !important;
 }
 
-/* Unknown/Default Status - Light Gray */
 .status-unknown {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
     color: #495057 !important;
     border: 1px solid #ced4da !important;
 }
 
-/* Legacy classes for backward compatibility */
 .status-active {
     background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
     color: #155724;
@@ -1134,24 +1091,20 @@ body.resizing-column .data-table th.sortable {
 }
 
 @media (max-width: 1024px) {
-    /* Keep side-by-side layout but adjust widths */
     .dashboard-container {
         grid-template-columns: 280px 1fr;
         gap: 10px;
     }
 
-    /* Collapsed form state still works */
     .dashboard-container.form-collapsed {
         grid-template-columns: 0fr 1fr;
         gap: 0;
     }
 
-    /* Ensure navbar stays left-aligned */
     .navbar .container {
         justify-content: flex-start;
     }
 
-    /* Improve navbar spacing at medium screens */
     .navbar-brand .title {
         font-size: 18px;
     }
@@ -1166,16 +1119,15 @@ body.resizing-column .data-table th.sortable {
 }
 
 @media (max-width: 900px) {
-    /* Optimize navbar for half-screen width */
     .navbar .container {
         padding: 0 15px;
-        gap: 10px; /* Add gap between left and right sections */
-        justify-content: flex-start; /* Force left alignment */
+        gap: 10px;
+        justify-content: flex-start;
     }
 
     .navbar-brand .title {
         font-size: 16px;
-        max-width: 200px; /* Limit title width to protect right side */
+        max-width: 200px;
     }
 
     .navbar-brand .icon {
@@ -1183,7 +1135,7 @@ body.resizing-column .data-table th.sortable {
     }
 
     .navbar-user {
-        gap: 10px; /* Reduce gap between right elements */
+        gap: 10px;
     }
 
     .welcome-text {
@@ -1202,14 +1154,13 @@ body.resizing-column .data-table th.sortable {
 }
 
 @media (max-width: 768px) {
-    /* Keep navbar horizontal and left-aligned */
     .navbar .container {
         justify-content: flex-start;
         flex-wrap: nowrap;
     }
 
     .navbar-user {
-        flex-direction: row; /* Keep horizontal */
+        flex-direction: row;
         align-items: center;
         gap: 8px;
         flex-wrap: nowrap;
@@ -1230,7 +1181,6 @@ body.resizing-column .data-table th.sortable {
 }
 
 @media (max-width: 600px) {
-    /* Compact navbar for small screens */
     .navbar .container {
         justify-content: flex-start;
     }
@@ -1255,7 +1205,6 @@ body.resizing-column .data-table th.sortable {
 }
 
 @media (max-width: 480px) {
-    /* Ultra-compact for very small screens */
     .navbar {
         padding: 10px 0;
     }
@@ -1301,8 +1250,6 @@ body.resizing-column .data-table th.sortable {
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
-
-/* ==================== PAGINATION STYLES ==================== */
 
 .pagination-wrapper {
     display: flex;
@@ -1431,7 +1378,6 @@ body.resizing-column .data-table th.sortable {
     letter-spacing: 0.3px;
 }
 
-/* Responsive pagination */
 @media (max-width: 768px) {
     .pagination-wrapper {
         flex-direction: column;
@@ -1457,3 +1403,183 @@ body.resizing-column .data-table th.sortable {
     }
 }
 
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+.modal-overlay.show {
+    opacity: 1;
+}
+
+.modal-dialog {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.95) translateY(-10px);
+    transition: transform 0.15s ease;
+}
+
+.modal-overlay.show .modal-dialog {
+    transform: scale(1) translateY(0);
+}
+
+.modal-header {
+    padding: 30px 30px 20px;
+    text-align: center;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.modal-icon-warning {
+    font-size: 56px;
+    margin-bottom: 15px;
+    animation: warningPulse 2s ease-in-out infinite;
+}
+
+@keyframes warningPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.modal-header h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.modal-body {
+    padding: 30px;
+}
+
+.modal-warning-text {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.modal-student-info {
+    background: #f8f9fa;
+    border-left: 4px solid #ED1B2F;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #666;
+    font-size: 14px;
+}
+
+.info-value {
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+    text-align: right;
+}
+
+.modal-danger-text {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    color: #856404;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    margin: 0;
+}
+
+.modal-footer {
+    padding: 20px 30px 30px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn-modal {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.btn-cancel {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-cancel:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+.btn-modal:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .modal-dialog {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 20px;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+    }
+    
+    .btn-modal {
+        width: 100%;
+    }
+}
