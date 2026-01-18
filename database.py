@@ -283,20 +283,85 @@ class Database:
             print(f"Error retrieving students: {e}")
             return []
     
-    def search_student(self, search_term):
+    def search_student(self, search_term, sort_column='id', sort_direction='asc'):
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
             
+            # Validate direction
+            direction = 'ASC' if sort_direction.lower() == 'asc' else 'DESC'
+            
+            # Validate sort column to prevent SQL injection
+            valid_columns = {
+                'id': f'id {direction}',
+                'student_id': f'student_id {direction}',
+                'name': f'last_name {direction}, first_name {direction}, middle_name {direction}',
+                'course': f'course {direction}',
+                'department': f'department {direction}',
+                'year_level': f'year_level {direction}',
+                'status': f'status {direction}'
+            }
+            
+            # Default to id if invalid column
+            order_by = valid_columns.get(sort_column, f'id {direction}')
+            
             search_pattern = f"%{search_term}%"
-            cursor.execute('''
-                SELECT * FROM students 
-                WHERE student_id LIKE ? 
-                OR first_name LIKE ? 
-                OR last_name LIKE ? 
-                OR course LIKE ?
-                ORDER BY enrollment_date DESC
-            ''', (search_pattern, search_pattern, search_pattern, search_pattern))
+            
+            # Handle department acronym searches
+            department_search = search_term.upper()
+            dept_mapping = {
+                'CICS': 'College of Informatics and Computing Sciences',
+                'COE': 'College of Engineering',
+                'CAFAD': 'College of Architecture, Fine Arts and Design',
+                'CET': 'College of Engineering Technology'
+            }
+            
+            # If search term matches an acronym, also search for full name
+            dept_full_name = dept_mapping.get(department_search, None)
+            
+            if dept_full_name:
+                # Search includes the full department name
+                query = f'''
+                    SELECT * FROM students 
+                    WHERE CAST(id AS TEXT) LIKE ?
+                    OR student_id LIKE ? 
+                    OR first_name LIKE ? 
+                    OR middle_name LIKE ?
+                    OR last_name LIKE ? 
+                    OR email LIKE ?
+                    OR phone LIKE ?
+                    OR course LIKE ?
+                    OR department LIKE ?
+                    OR department = ?
+                    OR year_level LIKE ?
+                    OR status LIKE ?
+                    ORDER BY {order_by}
+                '''
+                
+                cursor.execute(query, (search_pattern, search_pattern, search_pattern, search_pattern, 
+                                       search_pattern, search_pattern, search_pattern, search_pattern,
+                                       search_pattern, dept_full_name, search_pattern, search_pattern))
+            else:
+                # Normal search
+                query = f'''
+                    SELECT * FROM students 
+                    WHERE CAST(id AS TEXT) LIKE ?
+                    OR student_id LIKE ? 
+                    OR first_name LIKE ? 
+                    OR middle_name LIKE ?
+                    OR last_name LIKE ? 
+                    OR email LIKE ?
+                    OR phone LIKE ?
+                    OR course LIKE ?
+                    OR department LIKE ?
+                    OR year_level LIKE ?
+                    OR status LIKE ?
+                    ORDER BY {order_by}
+                '''
+                
+                cursor.execute(query, (search_pattern, search_pattern, search_pattern, search_pattern, 
+                                       search_pattern, search_pattern, search_pattern, search_pattern,
+                                       search_pattern, search_pattern, search_pattern))
             
             students = cursor.fetchall()
             conn.close()
