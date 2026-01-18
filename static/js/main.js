@@ -285,22 +285,22 @@ function getFormData() {
 }
 
 function validateFormData(data, isUpdate = false) {
-    // Required fields validation
+    // Required fields validation with specific field identification
     if (!data.student_id || !data.first_name || !data.last_name || !data.email || !data.course || !data.year_level) {
-        showAlert('Please fill in all required fields (Student ID, First Name, Last Name, Email, Course, Year Level)', 'warning');
+        showAlert('⚠️ Required Information Missing: Please complete all required fields marked with asterisk (*): Student ID, First Name, Last Name, Email, Course, and Year Level.', 'warning');
         return false;
     }
 
     // Department validation
     if (!data.department) {
-        showAlert('Please select a College Department', 'warning');
+        showAlert('⚠️ College Department Required: Please select the appropriate college for this student\'s program from the dropdown menu.', 'warning');
         return false;
     }
 
     // Student ID format validation (e.g., 25-00916, 26-12345)
     const studentIdPattern = /^\d{2}-\d{5}$/;
     if (!studentIdPattern.test(data.student_id)) {
-        showAlert('Student ID must be in format YY-NNNNN (e.g., 25-00916)', 'error');
+        showAlert('❌ Invalid Student ID Format: Please enter in YY-NNNNN format (e.g., 25-00916), where YY represents the enrollment year and NNNNN is the 5-digit student number.', 'error');
         return false;
     }
 
@@ -308,69 +308,69 @@ function validateFormData(data, isUpdate = false) {
     const namePattern = /^[a-zA-Z\s'-]+$/;
     
     if (!namePattern.test(data.first_name)) {
-        showAlert('First Name should only contain letters, spaces, hyphens, and apostrophes', 'error');
+        showAlert('❌ Invalid First Name: Only letters, spaces, hyphens (-), and apostrophes (\') are allowed. Please remove any numbers or special characters. Examples: "John", "Mary-Anne", "O\'Connor"', 'error');
         return false;
     }
 
     if (data.middle_name && !namePattern.test(data.middle_name)) {
-        showAlert('Middle Name should only contain letters, spaces, hyphens, and apostrophes', 'error');
+        showAlert('❌ Invalid Middle Name: Only letters, spaces, hyphens (-), and apostrophes (\') are allowed. Please remove any numbers or special characters.', 'error');
         return false;
     }
 
     if (!namePattern.test(data.last_name)) {
-        showAlert('Last Name should only contain letters, spaces, hyphens, and apostrophes', 'error');
+        showAlert('❌ Invalid Last Name: Only letters, spaces, hyphens (-), and apostrophes (\') are allowed. Please remove any numbers or special characters. Examples: "Smith", "De La Cruz", "O\'Brien"', 'error');
         return false;
     }
 
     // Name length validation
     if (data.first_name.length < 2 || data.first_name.length > 50) {
-        showAlert('First Name must be between 2 and 50 characters', 'error');
+        showAlert(`❌ First Name Length Error: Must be between 2 and 50 characters. Current length: ${data.first_name.length} characters. Please adjust accordingly.`, 'error');
         return false;
     }
 
     if (data.last_name.length < 2 || data.last_name.length > 50) {
-        showAlert('Last Name must be between 2 and 50 characters', 'error');
+        showAlert(`❌ Last Name Length Error: Must be between 2 and 50 characters. Current length: ${data.last_name.length} characters. Please adjust accordingly.`, 'error');
         return false;
     }
 
     if (data.middle_name && data.middle_name.length > 50) {
-        showAlert('Middle Name must not exceed 50 characters', 'error');
+        showAlert(`❌ Middle Name Length Error: Must not exceed 50 characters. Current length: ${data.middle_name.length} characters. Please shorten accordingly.`, 'error');
         return false;
     }
 
     // Email validation (required)
     if (!data.email) {
-        showAlert('Email address is required', 'error');
+        showAlert('❌ Email Address Required: Please provide a valid email address for account creation and communication purposes.', 'error');
         return false;
     }
     
     const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(data.email)) {
-        showAlert('Please enter a valid email address (e.g., student@example.com)', 'error');
+        showAlert('❌ Invalid Email Format: Please enter a valid email address (e.g., student@batstate-u.edu.ph or student@example.com). Ensure it includes "@" and a domain name.', 'error');
         return false;
     }
 
     // Phone validation (required - Philippine mobile format: 09XX-XXX-XXXX)
     if (!data.phone) {
-        showAlert('Phone number is required', 'error');
+        showAlert('❌ Phone Number Required: Please provide a valid Philippine mobile number for emergency contact and verification.', 'error');
         return false;
     }
     
     const phonePattern = /^09\d{2}-\d{3}-\d{4}$/;
     if (!phonePattern.test(data.phone)) {
-        showAlert('Phone number must be in format 09XX-XXX-XXXX (e.g., 0912-345-6789)', 'error');
+        showAlert('❌ Invalid Phone Format: Please enter a Philippine mobile number in format 09XX-XXX-XXXX (e.g., 0912-345-6789, 0917-123-4567, 0998-765-4321). Use dashes to separate digit groups.', 'error');
         return false;
     }
 
     // Course validation (now a dropdown selection)
     if (!data.course) {
-        showAlert('Please select a Course', 'error');
+        showAlert('⚠️ Course Selection Required: Please select the student\'s enrolled program from the dropdown menu (e.g., BS Computer Science, BS Civil Engineering).', 'error');
         return false;
     }
 
     // Year level validation (required)
     if (!data.year_level) {
-        showAlert('Please select a Year Level', 'error');
+        showAlert('⚠️ Year Level Required: Please select the student\'s current academic year (1st Year, 2nd Year, 3rd Year, or 4th Year) from the dropdown menu.', 'error');
         return false;
     }
 
