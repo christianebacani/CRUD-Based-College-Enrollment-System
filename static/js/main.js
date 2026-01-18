@@ -492,15 +492,26 @@ async function searchStudents() {
     clearTimeout(searchTimeout);
     
     const searchTerm = document.getElementById('searchInput').value.trim();
+    currentSearchTerm = searchTerm;
     
     searchTimeout = setTimeout(async () => {
         if (!searchTerm) {
+            currentSearchTerm = '';
             loadStudents();
             return;
         }
         
         try {
-            const response = await fetch(`/api/students/search?query=${encodeURIComponent(searchTerm)}`);
+            const url = new URL('/api/students/search', window.location.origin);
+            url.searchParams.append('query', searchTerm);
+            
+            // Add sort parameters if set
+            if (currentSortColumn) {
+                url.searchParams.append('sort_column', currentSortColumn);
+                url.searchParams.append('sort_direction', currentSortDirection);
+            }
+            
+            const response = await fetch(url);
             const data = await response.json();
             
             if (data.success) {
