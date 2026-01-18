@@ -8,45 +8,36 @@ let currentSearchTerm = '';
 let currentSortColumn = null;
 let currentSortDirection = 'asc';
 
-// Helper function to capitalize words properly
 function capitalizeWords(str) {
     if (!str) return '';
     return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
 }
 
-// Helper function to format phone number (Philippine format: 09XX-XXX-XXXX)
 function formatPhoneNumber(phone) {
     if (!phone) return '-';
-    // Remove all non-numeric characters
     const cleaned = phone.replace(/\D/g, '');
     
-    // Handle international format +639XXXXXXXXX (12 digits starting with 63)
     if (cleaned.length === 12 && cleaned.startsWith('63')) {
-        const localNumber = '0' + cleaned.slice(2); // Convert 639XX to 09XX
+        const localNumber = '0' + cleaned.slice(2);
         return `${localNumber.slice(0, 4)}-${localNumber.slice(4, 7)}-${localNumber.slice(7)}`;
     }
     
-    // Handle +123456789 or 123456789 format (9 digits) - prepend '09' prefix
     if (cleaned.length === 9) {
         const fullNumber = '09' + cleaned;
         return `${fullNumber.slice(0, 4)}-${fullNumber.slice(4, 7)}-${fullNumber.slice(7)}`;
     }
     
-    // Format as 09XX-XXX-XXXX for 11 digits starting with 09
     if (cleaned.length === 11 && cleaned.startsWith('09')) {
         return `${cleaned.slice(0, 4)}-${cleaned.slice(4, 7)}-${cleaned.slice(7)}`;
     }
     
-    // If already formatted correctly, return as-is
     if (/^09\d{2}-\d{3}-\d{4}$/.test(phone)) {
         return phone;
     }
     
-    // Return original if it doesn't match expected format
     return phone;
 }
 
-// Helper function to get department acronym
 function getDepartmentAcronym(department) {
     if (!department) return '-';
     
@@ -74,7 +65,6 @@ async function loadStudents() {
         url.searchParams.append('page', currentPage);
         url.searchParams.append('per_page', pageSize);
         
-        // Add sort parameters if set
         if (currentSortColumn) {
             url.searchParams.append('sort_column', currentSortColumn);
             url.searchParams.append('sort_direction', currentSortDirection);
@@ -119,19 +109,15 @@ function displayStudents(students) {
     }
     
     tableBody.innerHTML = students.map(student => {
-        // Format name as "Last Name, First Name, Middle Name"
         const lastName = capitalizeWords(student.last_name || '');
         const firstName = capitalizeWords(student.first_name || '');
         const middleName = student.middle_name ? capitalizeWords(student.middle_name) : '';
         const fullName = middleName ? `${lastName}, ${firstName}, ${middleName}` : `${lastName}, ${firstName}`;
         
-        // Format and display phone number with dashes (09XX-XXX-XXXX)
         const phone = formatPhoneNumber(student.phone);
         
-        // Get department acronym
         const department = getDepartmentAcronym(student.department);
         
-        // Capitalize status and handle null/undefined
         const status = student.status || 'Unknown';
         const statusText = capitalizeWords(status);
         const statusClass = status.toLowerCase().replace(/\s+/g, '');
@@ -155,12 +141,10 @@ function displayStudents(students) {
 }
 
 function selectStudent(studentId) {
-    // Remove selection from all rows
     document.querySelectorAll('.data-table tbody tr').forEach(row => {
         row.classList.remove('selected');
     });
     
-    // Add selection to clicked row
     const selectedRow = document.querySelector(`tr[data-student-id="${studentId}"]`);
     if (selectedRow) {
         selectedRow.classList.add('selected');
@@ -171,12 +155,10 @@ function selectStudent(studentId) {
     if (student) {
         selectedStudentId = studentId;
         
-        // Only populate form if form exists (admin role)
         const studentForm = document.getElementById('studentForm');
         if (studentForm) {
             populateForm(student);
             
-            // Ensure form panel is visible for admin users
             const formPanel = document.getElementById('formPanel');
             const dashboardContainer = document.querySelector('.dashboard-container');
             if (formPanel && formPanel.classList.contains('collapsed')) {
@@ -185,7 +167,6 @@ function selectStudent(studentId) {
                 localStorage.setItem('formPanelCollapsed', 'false');
             }
             
-            // Scroll form to top for better visibility
             const formPanelBody = formPanel.querySelector('.panel-body');
             if (formPanelBody) {
                 formPanelBody.scrollTop = 0;
@@ -215,18 +196,15 @@ function populateForm(student) {
     if (middleName) middleName.value = student.middle_name || '';
     if (lastName) lastName.value = student.last_name;
     if (email) email.value = student.email || '';
-    if (phone) phone.value = student.phone || '';
+    if (phone) phone.value = formatPhoneNumber(student.phone || '');
     
-    // Set department first to trigger course population
     if (department) {
         department.value = student.department || '';
         
-        // Trigger change event to populate courses
         const event = new Event('change');
         department.dispatchEvent(event);
     }
     
-    // Set course after department courses are populated
     if (course) {
         setTimeout(() => {
             course.value = student.course;
@@ -258,7 +236,6 @@ function deselectRow() {
     });
     selectedStudentId = null;
     
-    // Clear form if it exists (admin role)
     const studentForm = document.getElementById('studentForm');
     if (studentForm) {
         studentForm.reset();
@@ -285,26 +262,22 @@ function getFormData() {
 }
 
 function validateFormData(data, isUpdate = false) {
-    // Required fields validation with specific field identification
     if (!data.student_id || !data.first_name || !data.last_name || !data.email || !data.course || !data.year_level) {
         showAlert('⚠️ Required Information Missing: Please complete all required fields marked with asterisk (*): Student ID, First Name, Last Name, Email, Course, and Year Level.', 'warning');
         return false;
     }
 
-    // Department validation
     if (!data.department) {
         showAlert('⚠️ College Department Required: Please select the appropriate college for this student\'s program from the dropdown menu.', 'warning');
         return false;
     }
 
-    // Student ID format validation (e.g., 25-00916, 26-12345)
     const studentIdPattern = /^\d{2}-\d{5}$/;
     if (!studentIdPattern.test(data.student_id)) {
         showAlert('❌ Invalid Student ID Format: Please enter in YY-NNNNN format (e.g., 25-00916), where YY represents the enrollment year and NNNNN is the 5-digit student number.', 'error');
         return false;
     }
 
-    // Name validation (no numbers or special characters except hyphens, apostrophes, and spaces)
     const namePattern = /^[a-zA-Z\s'-]+$/;
     
     if (!namePattern.test(data.first_name)) {
@@ -322,7 +295,6 @@ function validateFormData(data, isUpdate = false) {
         return false;
     }
 
-    // Name length validation
     if (data.first_name.length < 2 || data.first_name.length > 50) {
         showAlert(`❌ First Name Length Error: Must be between 2 and 50 characters. Current length: ${data.first_name.length} characters. Please adjust accordingly.`, 'error');
         return false;
@@ -338,7 +310,6 @@ function validateFormData(data, isUpdate = false) {
         return false;
     }
 
-    // Email validation (required)
     if (!data.email) {
         showAlert('❌ Email Address Required: Please provide a valid email address for account creation and communication purposes.', 'error');
         return false;
@@ -350,7 +321,6 @@ function validateFormData(data, isUpdate = false) {
         return false;
     }
 
-    // Phone validation (required - Philippine mobile format: 09XX-XXX-XXXX)
     if (!data.phone) {
         showAlert('❌ Phone Number Required: Please provide a valid Philippine mobile number for emergency contact and verification.', 'error');
         return false;
@@ -362,13 +332,11 @@ function validateFormData(data, isUpdate = false) {
         return false;
     }
 
-    // Course validation (now a dropdown selection)
     if (!data.course) {
         showAlert('⚠️ Course Selection Required: Please select the student\'s enrolled program from the dropdown menu (e.g., BS Computer Science, BS Civil Engineering).', 'error');
         return false;
     }
 
-    // Year level validation (required)
     if (!data.year_level) {
         showAlert('⚠️ Year Level Required: Please select the student\'s current academic year (1st Year, 2nd Year, 3rd Year, or 4th Year) from the dropdown menu.', 'error');
         return false;
@@ -461,29 +429,113 @@ async function deleteStudent() {
     }
     
     const student = currentStudents.find(s => s.student_id === originalStudentId);
-    const studentName = student ? `${student.first_name} ${student.last_name}` : 'this student';
     
-    if (!confirm(`Are you sure you want to delete ${studentName}?`)) {
+    if (!student) {
+        showAlert('Student not found', 'error');
         return;
     }
     
-    try {
-        const response = await fetch(`/api/students/delete/${originalStudentId}`, {
-            method: 'DELETE'
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            showAlert('Student deleted successfully!', 'success');
-            clearForm();
-            loadStudents();
-        } else {
-            showAlert(result.message, 'error');
+    showDeleteConfirmation(student, async () => {
+        try {
+            const response = await fetch(`/api/students/delete/${originalStudentId}`, {
+                method: 'DELETE'
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showAlert('Student deleted successfully!', 'success');
+                clearForm();
+                loadStudents();
+            } else {
+                showAlert(result.message, 'error');
+            }
+        } catch (error) {
+            console.error('Error deleting student:', error);
+            showAlert('Error deleting student', 'error');
         }
-    } catch (error) {
-        console.error('Error deleting student:', error);
-        showAlert('Error deleting student', 'error');
+    });
+}
+
+function showDeleteConfirmation(student, onConfirm) {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    
+    const fullName = `${capitalizeWords(student.first_name)} ${student.middle_name ? capitalizeWords(student.middle_name) + ' ' : ''}${capitalizeWords(student.last_name)}`;
+    
+    modal.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <div class="modal-icon-warning">⚠️</div>
+                <h3>Confirm Deletion</h3>
+            </div>
+            <div class="modal-body">
+                <p class="modal-warning-text">You are about to permanently delete this student record:</p>
+                <div class="modal-student-info">
+                    <div class="info-row">
+                        <span class="info-label">Student ID:</span>
+                        <span class="info-value">${student.student_id}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Name:</span>
+                        <span class="info-value">${fullName}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Course:</span>
+                        <span class="info-value">${student.course}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Year Level:</span>
+                        <span class="info-value">${student.year_level}</span>
+                    </div>
+                </div>
+                <p class="modal-danger-text">⚠️ This action cannot be undone!</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn-modal btn-delete" onclick="confirmDelete()">Delete Student</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    window.currentDeleteConfirmation = onConfirm;
+    
+    requestAnimationFrame(() => {
+        modal.classList.add('show');
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeDeleteModal();
+        }
+    });
+    
+    const escHandler = (e) => {
+        if (e.key === 'Escape') {
+            closeDeleteModal();
+            document.removeEventListener('keydown', escHandler);
+        }
+    };
+    document.addEventListener('keydown', escHandler);
+}
+
+function closeDeleteModal() {
+    const modal = document.querySelector('.modal-overlay');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.remove();
+            window.currentDeleteConfirmation = null;
+        }, 150);
+    }
+}
+
+function confirmDelete() {
+    if (window.currentDeleteConfirmation) {
+        window.currentDeleteConfirmation();
+        closeDeleteModal();
     }
 }
 
@@ -505,7 +557,6 @@ async function searchStudents() {
             const url = new URL('/api/students/search', window.location.origin);
             url.searchParams.append('query', searchTerm);
             
-            // Add sort parameters if set
             if (currentSortColumn) {
                 url.searchParams.append('sort_column', currentSortColumn);
                 url.searchParams.append('sort_direction', currentSortDirection);
@@ -516,8 +567,12 @@ async function searchStudents() {
             
             if (data.success) {
                 currentStudents = data.students;
+                totalRecords = currentStudents.length;
+                totalPages = 1;
+                currentPage = 1;
                 displayStudents(currentStudents);
                 updateRecordCount(currentStudents.length, true);
+                renderPagination();
             }
         } catch (error) {
             console.error('Error searching students:', error);
@@ -576,32 +631,26 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Deselect row when clicking outside the table
 document.addEventListener('click', function(e) {
-    // Check if click is outside table rows
     const clickedRow = e.target.closest('.data-table tbody tr');
     const clickedFormPanel = e.target.closest('.form-panel');
     const clickedButton = e.target.closest('button');
     const clickedInput = e.target.closest('input, select, textarea');
     
-    // If clicked outside table rows and not on form elements, deselect
     if (!clickedRow && !clickedFormPanel && !clickedButton && !clickedInput && selectedStudentId) {
         deselectRow();
     }
 });
 
-// Auto-format phone number as user types (09XX-XXX-XXXX)
 const phoneInput = document.getElementById('phone');
 if (phoneInput) {
     phoneInput.addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+        let value = e.target.value.replace(/\D/g, '');
         
-        // Limit to 11 digits
         if (value.length > 11) {
             value = value.slice(0, 11);
         }
         
-        // Format as 09XX-XXX-XXXX
         if (value.length >= 4) {
             value = value.slice(0, 4) + '-' + value.slice(4);
         }
@@ -612,7 +661,6 @@ if (phoneInput) {
         e.target.value = value;
     });
     
-    // Prevent non-numeric input except dashes
     phoneInput.addEventListener('keypress', function(e) {
         const char = String.fromCharCode(e.which);
         if (!/[0-9-]/.test(char)) {
@@ -621,19 +669,16 @@ if (phoneInput) {
     });
 }
 
-// Ensure loadStudents is called when DOM is ready (fallback)
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
         loadStudents();
         initResizableColumns();
     });
 } else {
-    // DOM is already ready, call loadStudents immediately
     loadStudents();
     initResizableColumns();
 }
 
-// ============ RESIZABLE COLUMNS FEATURE (Excel-like) ============
 function initResizableColumns() {
     const table = document.querySelector('.data-table');
     if (!table) return;
@@ -647,9 +692,8 @@ function initResizableColumns() {
     let startX = 0;
     let startWidth = 0;
     
-    // Add resize handles to each column header (except last one)
     ths.forEach((th, index) => {
-        if (index < ths.length - 1) { // Skip last column
+        if (index < ths.length - 1) {
             const resizer = document.createElement('div');
             resizer.className = 'column-resizer';
             th.style.position = 'relative';
@@ -665,7 +709,6 @@ function initResizableColumns() {
                 document.addEventListener('mousemove', handleMouseMove);
                 document.addEventListener('mouseup', handleMouseUp);
                 
-                // Add resizing class for visual feedback
                 th.classList.add('resizing');
                 document.body.classList.add('resizing-column');
                 document.body.style.cursor = 'col-resize';
@@ -679,15 +722,12 @@ function initResizableColumns() {
             const diff = e.pageX - startX;
             const newWidth = startWidth + diff;
             
-            // Minimum column width of 50px
             if (newWidth >= 50) {
                 const percentage = (newWidth / table.offsetWidth) * 100;
                 const columnIndex = Array.from(ths).indexOf(currentTh) + 1;
                 
-                // Apply width to both th and corresponding td cells
                 currentTh.style.width = percentage + '%';
                 
-                // Update all td cells in this column
                 const rows = table.querySelectorAll('tbody tr');
                 rows.forEach(row => {
                     const cell = row.querySelector(`td:nth-child(${columnIndex})`);
@@ -696,7 +736,6 @@ function initResizableColumns() {
                     }
                 });
                 
-                // Save column widths to localStorage
                 saveColumnWidths();
             }
         }
@@ -715,8 +754,6 @@ function initResizableColumns() {
         currentTh = null;
     }
 }
-
-// ==================== PAGINATION FUNCTIONS ====================
 
 function renderPagination() {
     const paginationContainer = document.getElementById('paginationContainer');
@@ -738,17 +775,14 @@ function renderPagination() {
         </button>
     `;
     
-    // Page numbers with smart ellipsis
     const maxVisible = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let endPage = Math.min(totalPages, startPage + maxVisible - 1);
     
-    // Adjust start if we're near the end
     if (endPage - startPage < maxVisible - 1) {
         startPage = Math.max(1, endPage - maxVisible + 1);
     }
     
-    // Show first page + ellipsis if needed
     if (startPage > 1) {
         paginationHTML += `<button class="pagination-btn" onclick="changePage(1)">1</button>`;
         if (startPage > 2) {
@@ -756,7 +790,6 @@ function renderPagination() {
         }
     }
     
-    // Show page numbers
     for (let i = startPage; i <= endPage; i++) {
         paginationHTML += `
             <button class="pagination-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
@@ -765,7 +798,6 @@ function renderPagination() {
         `;
     }
     
-    // Show ellipsis + last page if needed
     if (endPage < totalPages) {
         if (endPage < totalPages - 1) {
             paginationHTML += `<span class="pagination-ellipsis">...</span>`;
@@ -797,7 +829,6 @@ function changePage(page) {
         loadStudents();
     }
     
-    // Scroll to top of table
     const tableContainer = document.querySelector('.table-container');
     if (tableContainer) {
         tableContainer.scrollTop = 0;
@@ -806,7 +837,7 @@ function changePage(page) {
 
 function changePageSize(newSize) {
     pageSize = parseInt(newSize);
-    currentPage = 1; // Reset to first page
+    currentPage = 1;
     
     if (currentSearchTerm) {
         searchStudents();
@@ -815,10 +846,7 @@ function changePageSize(newSize) {
     }
 }
 
-// ==================== SORTING FUNCTIONS ====================
-
 function sortTable(column) {
-    // Toggle direction if same column, otherwise start with ascending
     if (currentSortColumn === column) {
         currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
     } else {
@@ -826,10 +854,8 @@ function sortTable(column) {
         currentSortDirection = 'asc';
     }
     
-    // Reset to first page when sorting
     currentPage = 1;
     
-    // Reload data from server with sort parameters
     if (currentSearchTerm) {
         searchStudents();
     } else {
@@ -838,12 +864,10 @@ function sortTable(column) {
 }
 
 function updateSortIndicators() {
-    // Remove all active classes
     document.querySelectorAll('.data-table th').forEach(th => {
         th.classList.remove('sort-asc', 'sort-desc');
     });
     
-    // Add active class to current sorted column
     if (currentSortColumn) {
         const th = document.querySelector(`th[data-column="${currentSortColumn}"]`);
         if (th) {
