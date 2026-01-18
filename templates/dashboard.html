@@ -8,7 +8,6 @@
     <script src="{{ url_for('static', filename='js/main.js') }}?v=7.0" defer></script>
 </head>
 <body class="dashboard-page">
-    <!-- Hover zone on left edge to trigger toggle button -->
     <div class="hover-zone-left"></div>
     
     <nav class="navbar">
@@ -38,7 +37,6 @@
 
     <div class="container dashboard-container">
         {% if user.role == 'admin' %}
-        <!-- Floating toggle button when form is collapsed -->
         <button type="button" class="floating-toggle-btn" id="floatingToggleBtn" title="Show student form">
             <span class="toggle-icon"></span>
         </button>
@@ -213,7 +211,6 @@
                     </table>
                 </div>
                 
-                <!-- Pagination Controls -->
                 <div class="pagination-wrapper">
                     <div class="pagination-container" id="paginationContainer"></div>
                 </div>
